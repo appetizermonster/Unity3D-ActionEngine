@@ -58,5 +58,10 @@ AE.Repeat(
 ).Loops(5).Play();
 ```
 
+## Credits
+- Easing Functions  
+<http://robotacid.com/documents/code/Easing.cs>  
+<http://www.robertpenner.com/easing/>
+
 ## License
 MIT
