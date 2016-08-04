@@ -2,7 +2,18 @@
 
 Simple, powerful, productive Action Engine for Unity3D, inspired by DOTween, Cocos2d
 
-## How to use
+## Features
+- Play/Pause/Resume/Loop/Complete Playback
+- Composite Tween Actions with Coroutines
+- Object Pooling for Default
+
+## Differences with Tween Engine
+- Coroutine Support (Partial)
+- No Reverse Playback
+- No Goto
+- No Duration
+
+## How to Use
 - Tweening Transform
 ```csharp
 using ActionEngine;
