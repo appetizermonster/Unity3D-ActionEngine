@@ -8,28 +8,15 @@ namespace ActionEngine {
 		private readonly List<ActionBase> actions_ = new List<ActionBase>();
 		private int curIndex_ = -1;
 
+		#region Parameters
+
 		public SequenceAction Add (ActionBase action) {
 			action.SetOwner(this);
 			actions_.Add(action);
 			return this;
 		}
 
-		protected override void OnKill () {
-			for (var i = 0; i < actions_.Count; ++i) {
-				actions_[i].Kill();
-			}
-
-			actions_.Clear();
-			curIndex_ = -1;
-		}
-
-		protected override void OnRewind () {
-			curIndex_ = -1;
-
-			for (var i = 0; i < actions_.Count; ++i) {
-				actions_[i].Rewind();
-			}
-		}
+		#endregion Parameters
 
 		protected override bool OnUpdate (float deltaTime) {
 			if (actions_.Count <= 0)
@@ -74,6 +61,23 @@ namespace ActionEngine {
 				actions_[i].Begin();
 				actions_[i].Complete();
 			}
+		}
+
+		protected override void OnRewind () {
+			curIndex_ = -1;
+
+			for (var i = 0; i < actions_.Count; ++i) {
+				actions_[i].Rewind();
+			}
+		}
+
+		protected override void OnKill () {
+			for (var i = 0; i < actions_.Count; ++i) {
+				actions_[i].Kill();
+			}
+
+			actions_.Clear();
+			curIndex_ = -1;
 		}
 	}
 }

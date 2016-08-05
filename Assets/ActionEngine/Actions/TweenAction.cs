@@ -101,9 +101,7 @@ namespace ActionEngine {
 
 		private float elapsed_ = 0f;
 
-		public abstract T Lerp (T a, T b, float p);
-
-		public abstract T Add (T a, T b);
+		#region Parameters
 
 		public ConcreteClass Getter (Func<T> getter) {
 			getter_ = getter;
@@ -135,20 +133,7 @@ namespace ActionEngine {
 			return (ConcreteClass)((object)this);
 		}
 
-		protected override void OnKill () {
-			getter_ = null;
-			setter_ = null;
-
-			startValue_ = default(T);
-			endValue_ = default(T);
-			finalValue_ = default(T);
-
-			duration_ = 0f;
-			relative_ = false;
-			easing_ = null;
-
-			elapsed_ = 0f;
-		}
+		#endregion Parameters
 
 		protected override sealed void OnBegin () {
 			startValue_ = getter_();
@@ -158,14 +143,6 @@ namespace ActionEngine {
 			} else {
 				finalValue_ = endValue_;
 			}
-		}
-
-		protected override void OnComplete () {
-			setter_(finalValue_);
-		}
-
-		protected override void OnRewind () {
-			elapsed_ = 0f;
 		}
 
 		protected override bool OnUpdate (float deltaTime) {
@@ -184,5 +161,36 @@ namespace ActionEngine {
 
 			return (p >= 1f);
 		}
+
+		protected override void OnComplete () {
+			setter_(finalValue_);
+		}
+
+		protected override void OnRewind () {
+			elapsed_ = 0f;
+		}
+
+		protected override void OnKill () {
+			getter_ = null;
+			setter_ = null;
+
+			startValue_ = default(T);
+			endValue_ = default(T);
+			finalValue_ = default(T);
+
+			duration_ = 0f;
+			relative_ = false;
+			easing_ = null;
+
+			elapsed_ = 0f;
+		}
+
+		#region Abstract Methods
+
+		public abstract T Lerp (T a, T b, float p);
+
+		public abstract T Add (T a, T b);
+
+		#endregion Abstract Methods
 	}
 }

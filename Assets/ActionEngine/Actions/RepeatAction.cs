@@ -10,6 +10,8 @@ namespace ActionEngine {
 		private int curLoop_ = 0;
 		private ActionBase action_ = null;
 
+		#region Parameters
+
 		public RepeatAction Loops (int loops) {
 			loops_ = loops;
 			return this;
@@ -21,22 +23,10 @@ namespace ActionEngine {
 			return this;
 		}
 
-		protected override void OnKill () {
-			if (action_ != null)
-				action_.Kill();
-
-			loops_ = 1;
-			curLoop_ = 0;
-			action_ = null;
-		}
+		#endregion Parameters
 
 		protected override void OnBegin () {
 			action_.Begin();
-		}
-
-		protected override void OnRewind () {
-			action_.Rewind();
-			curLoop_ = 0;
 		}
 
 		protected override bool OnUpdate (float deltaTime) {
@@ -58,7 +48,22 @@ namespace ActionEngine {
 		}
 
 		protected override void OnComplete () {
-			action_.Complete();
+			if (action_.State == InternalState.BEGIN)
+				action_.Complete();
+		}
+
+		protected override void OnRewind () {
+			action_.Rewind();
+			curLoop_ = 0;
+		}
+
+		protected override void OnKill () {
+			if (action_ != null)
+				action_.Kill();
+
+			loops_ = 1;
+			curLoop_ = 0;
+			action_ = null;
 		}
 	}
 }

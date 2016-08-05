@@ -14,6 +14,8 @@ namespace ActionEngine {
 		private readonly List<ActionBase> actions_ = new List<ActionBase>();
 		private readonly List<PlayState> playStates_ = new List<PlayState>();
 
+		#region Parameters
+
 		public ParallelAction Add (ActionBase action) {
 			action.SetOwner(this);
 			actions_.Add(action);
@@ -21,26 +23,11 @@ namespace ActionEngine {
 			return this;
 		}
 
-		protected override void OnKill () {
-			for (var i = 0; i < actions_.Count; ++i) {
-				actions_[i].Kill();
-			}
-			actions_.Clear();
-			playStates_.Clear();
-		}
+		#endregion Parameters
 
 		protected override void OnBegin () {
 			for (var i = 0; i < actions_.Count; ++i) {
 				actions_[i].Begin();
-			}
-		}
-
-		protected override void OnRewind () {
-			playStates_.Clear();
-
-			for (var i = 0; i < actions_.Count; ++i) {
-				actions_[i].Rewind();
-				playStates_.Add(PlayState.INCOMPLETE);
 			}
 		}
 
@@ -76,6 +63,23 @@ namespace ActionEngine {
 
 				playStates_[i] = PlayState.COMPLETE;
 			}
+		}
+
+		protected override void OnRewind () {
+			playStates_.Clear();
+
+			for (var i = 0; i < actions_.Count; ++i) {
+				actions_[i].Rewind();
+				playStates_.Add(PlayState.INCOMPLETE);
+			}
+		}
+
+		protected override void OnKill () {
+			for (var i = 0; i < actions_.Count; ++i) {
+				actions_[i].Kill();
+			}
+			actions_.Clear();
+			playStates_.Clear();
 		}
 	}
 }

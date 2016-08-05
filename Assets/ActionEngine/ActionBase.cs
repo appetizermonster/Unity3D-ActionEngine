@@ -7,16 +7,18 @@ namespace ActionEngine {
 	public abstract class ActionBase {
 
 		public enum InternalState {
-			PENDING,
+			READY_TO_BEGIN,
 			BEGIN
 		}
 
 		internal ActionBase () {
 		}
 
-		private InternalState state_ = InternalState.PENDING;
 		private ActionBase owner_ = null;
-		protected IActionPool actionPool_ = null;
+		private IActionPool actionPool_ = null;
+		private InternalState state_ = InternalState.READY_TO_BEGIN;
+
+		internal InternalState State { get { return state_; } }
 
 		internal void SetActionPool (IActionPool actionPool) {
 			actionPool_ = actionPool;
@@ -29,15 +31,17 @@ namespace ActionEngine {
 		}
 
 		internal void Begin () {
-			if (state_ != InternalState.PENDING)
+			if (state_ != InternalState.READY_TO_BEGIN)
 				return;
 
 			OnBegin();
 			state_ = InternalState.BEGIN;
 		}
 
-		internal void Rewind () {
-			OnRewind();
+		internal bool Update (float deltaTime) {
+			if (state_ != InternalState.BEGIN)
+				return true;
+			return OnUpdate(deltaTime);
 		}
 
 		internal void Complete () {
@@ -45,35 +49,53 @@ namespace ActionEngine {
 				return;
 
 			OnComplete();
-			state_ = InternalState.PENDING;
+			state_ = InternalState.READY_TO_BEGIN;
+		}
+
+		internal void Rewind () {
+			OnRewind();
 		}
 
 		internal void Kill () {
 			OnKill();
 
+			// Reset All States
 			owner_ = null;
 			actionPool_.Pool(this);
-			state_ = InternalState.PENDING;
+			state_ = InternalState.READY_TO_BEGIN;
 		}
 
-		internal bool Update (float deltaTime) {
-			return OnUpdate(deltaTime);
-		}
-
+		/// <summary>
+		/// Should make all internal states begin
+		/// </summary>
 		protected virtual void OnBegin () {
 		}
 
-		protected virtual void OnRewind () {
+		/// <summary>
+		/// Should update all internal states using deltaTime
+		/// </summary>
+		/// <param name="deltaTime">deltaTime</param>
+		/// <returns>true if Action has completed</returns>
+		protected virtual bool OnUpdate (float deltaTime) {
+			return true;
 		}
 
+		/// <summary>
+		/// Should make all internal states complete
+		/// </summary>
 		protected virtual void OnComplete () {
 		}
 
-		protected virtual void OnKill () {
+		/// <summary>
+		/// Should make all internal states ready to replay, and this will be called after <see cref="OnComplete"/>
+		/// </summary>
+		protected virtual void OnRewind () {
 		}
 
-		protected virtual bool OnUpdate (float deltaTime) {
-			return true;
+		/// <summary>
+		/// Should reset all internal states in Here
+		/// </summary>
+		protected virtual void OnKill () {
 		}
 	}
 }

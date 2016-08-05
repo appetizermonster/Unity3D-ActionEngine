@@ -30,16 +30,12 @@ namespace ActionEngine {
 
 		#region Action Shortcuts
 
-		public static SequenceAction Sequence (params ActionBase[] actions) {
-			var seq = Action<SequenceAction>();
-			for (var i = 0; i < actions.Length; ++i) {
-				seq.Add(actions[i]);
-			}
-			return seq;
+		public static CoroutineAction Coroutine (Func<IEnumerator> routineGenerator) {
+			return Action<CoroutineAction>().Coroutine(routineGenerator);
 		}
 
-		public static RepeatAction Repeat (ActionBase action) {
-			return Action<RepeatAction>().Action(action);
+		public static DelayAction Delay (float duration) {
+			return Action<DelayAction>().Duration(duration);
 		}
 
 		public static ParallelAction Parallel (params ActionBase[] actions) {
@@ -50,12 +46,24 @@ namespace ActionEngine {
 			return par;
 		}
 
-		public static DelayAction Delay (float duration) {
-			return Action<DelayAction>().Duration(duration);
+		public static RepeatAction Repeat (ActionBase action) {
+			return Action<RepeatAction>().Action(action);
 		}
 
-		public static CoroutineAction Coroutine (Func<IEnumerator> routineGenerator) {
-			return Action<CoroutineAction>().Coroutine(routineGenerator);
+		public static ScriptAction Script (Action script) {
+			return Action<ScriptAction>().Script(script);
+		}
+
+		public static SequenceAction Sequence (params ActionBase[] actions) {
+			var seq = Action<SequenceAction>();
+			for (var i = 0; i < actions.Length; ++i) {
+				seq.Add(actions[i]);
+			}
+			return seq;
+		}
+
+		public static TimeScaleAction TimeScale (ActionBase action) {
+			return Action<TimeScaleAction>().Action(action);
 		}
 
 		#endregion Action Shortcuts
