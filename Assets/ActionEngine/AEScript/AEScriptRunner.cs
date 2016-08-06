@@ -31,6 +31,10 @@ namespace ActionEngine {
 				Internal_Play(true); // No need to use CSharpCodeProvider process in the first
 		}
 
+		private void OnDestroy () {
+			Kill();
+		}
+
 		private ActionInstance curActionInstance_ = null;
 
 		/// <summary>
