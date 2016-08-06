@@ -3,10 +3,10 @@ using System;
 using System.CodeDom.Compiler;
 using System.Collections;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using System.Linq;
 
 namespace ActionEngine {
 
@@ -16,16 +16,26 @@ namespace ActionEngine {
 
 		[MenuItem("Assets/Create/C# AEScript", false, 94)]
 		private static void CreateAEScriptSource () {
+			var scriptTemplatePath = GetAEScriptTemplatePath();
+			var createScriptAsset = typeof(ProjectWindowUtil).GetMethod("CreateScriptAsset", BindingFlags.NonPublic | BindingFlags.Static);
+			createScriptAsset.Invoke(null, new object[] { scriptTemplatePath, "New AEX.cs" });
+		}
+
+		private static string scriptTemplatePath_ = null;
+
+		private static string GetAEScriptTemplatePath () {
+			if (scriptTemplatePath_ != null && File.Exists(scriptTemplatePath_))
+				return scriptTemplatePath_;
+
 			var templates = AssetDatabase.FindAssets("AEX.Template");
 			if (templates == null || templates.Length == 0)
 				throw new InvalidOperationException("Can't find a script template");
 
 			var template = AssetDatabase.GUIDToAssetPath(templates[0]);
-			var templatePath = Path.GetFullPath(template);
+			scriptTemplatePath_ = Path.GetFullPath(template);
 
-			var createScriptAsset = typeof(ProjectWindowUtil).GetMethod("CreateScriptAsset", BindingFlags.NonPublic | BindingFlags.Static);
-			createScriptAsset.Invoke(null, new object[] { templatePath, "New AEX.cs" });
-        }
+			return scriptTemplatePath_;
+		}
 
 		public override void OnInspectorGUI () {
 			base.OnInspectorGUI();
