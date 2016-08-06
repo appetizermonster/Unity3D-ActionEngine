@@ -12,7 +12,10 @@ namespace ActionEngine {
 		public override void OnGUI (Rect position, SerializedProperty property, GUIContent label) {
 			EditorGUI.BeginProperty(position, label, property);
 
-			property.isExpanded = EditorGUI.Foldout(position, property.isExpanded, label);
+			var labelPosition = position;
+			labelPosition.height = TEXT_HEIGHT - 2;
+
+			property.isExpanded = EditorGUI.Foldout(labelPosition, property.isExpanded, label);
 
 			if (!property.isExpanded) {
 				EditorGUI.EndProperty();
