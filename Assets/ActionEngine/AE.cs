@@ -28,8 +28,8 @@ namespace ActionEngine {
 			GetInstance().KillAll();
 		}
 
-		public static ActionInstance Play (this ActionBase action) {
-			return action.Enqueue().Play();
+		public static ActionInstance Play (this ActionBase action, bool unscaled = false) {
+			return action.Enqueue().Play(unscaled);
 		}
 
 		#region Action Shortcuts

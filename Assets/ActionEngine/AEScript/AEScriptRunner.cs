@@ -46,7 +46,7 @@ namespace ActionEngine {
 
 			var action = CreateAction(useReflectionOnly);
 			if (action != null) {
-				curActionInstance_ = action.Play().Unscaled(unscaled);
+				curActionInstance_ = action.Play(unscaled);
 			} else {
 				Debug.LogErrorFormat("Can't create an action from '{0}'" + __assignedScriptName);
 			}

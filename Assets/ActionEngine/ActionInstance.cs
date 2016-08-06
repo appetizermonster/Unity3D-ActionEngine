@@ -26,11 +26,6 @@ namespace ActionEngine {
 
 		#region Parameters
 
-		public ActionInstance Unscaled (bool unscaled) {
-			unscaled_ = unscaled;
-			return this;
-		}
-
 		public ActionInstance AddDelay (float delay) {
 			queuedDelay_ += delay;
 			return this;
@@ -44,12 +39,15 @@ namespace ActionEngine {
 
 		private float oldTime_ = 0f;
 
-		public ActionInstance Play () {
+		public ActionInstance Play (bool unscaled) {
 			if (state_ != InstanceState.READY)
 				throw new Exception("State must be READY");
 
-			oldTime_ = GetLocalTime();
+			unscaled_ = unscaled;
+
 			state_ = InstanceState.PLAYING;
+			oldTime_ = GetLocalTime();
+
 			action_.Begin();
 
 			return this;
