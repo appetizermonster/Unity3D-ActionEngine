@@ -6,13 +6,19 @@ using UnityEngine;
 namespace ActionEngine {
 
 	[CustomPropertyDrawer(typeof(AEScriptData))]
-	public class AEScriptDataDrawer : PropertyDrawer {
+	public sealed class AEScriptDataDrawer : PropertyDrawer {
 		private const int TEXT_HEIGHT = 18;
 
 		public override void OnGUI (Rect position, SerializedProperty property, GUIContent label) {
 			EditorGUI.BeginProperty(position, label, property);
 
-			var labelPosition = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
+			property.isExpanded = EditorGUI.Foldout(position, property.isExpanded, label);
+
+			if (!property.isExpanded) {
+				EditorGUI.EndProperty();
+				return;
+			}
+			
 
 			var oldIndent = EditorGUI.indentLevel;
 			EditorGUI.indentLevel = 0;
@@ -20,7 +26,7 @@ namespace ActionEngine {
 			const int INDENT = 30;
 			const int LABEL_WIDTH = 50;
 
-			var keyRect = new Rect(position.x + INDENT + LABEL_WIDTH, labelPosition.y + TEXT_HEIGHT, position.width - INDENT - LABEL_WIDTH, TEXT_HEIGHT);
+			var keyRect = new Rect(position.x + INDENT + LABEL_WIDTH, position.y + TEXT_HEIGHT, position.width - INDENT - LABEL_WIDTH, TEXT_HEIGHT);
 			var typeRect = keyRect; typeRect.y += TEXT_HEIGHT;
 			var valueRect = typeRect; valueRect.y += TEXT_HEIGHT;
 
@@ -54,7 +60,9 @@ namespace ActionEngine {
 		}
 
 		public override float GetPropertyHeight (SerializedProperty property, GUIContent label) {
-			return base.GetPropertyHeight(property, label) + TEXT_HEIGHT * 3;
+			if (property.isExpanded)
+				return base.GetPropertyHeight(property, label) + TEXT_HEIGHT * 3;
+			return base.GetPropertyHeight(property, label);
 		}
 	}
 }
