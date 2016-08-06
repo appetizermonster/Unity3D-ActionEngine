@@ -34,6 +34,10 @@ namespace ActionEngine {
 			return Action<CoroutineAction>().Coroutine(routineGenerator);
 		}
 
+		public static DebugAction Debug (object message, UnityEngine.Object context = null) {
+			return Action<DebugAction>().Message(message, context);
+		}
+
 		public static DelayAction Delay (float duration) {
 			return Action<DelayAction>().Duration(duration);
 		}

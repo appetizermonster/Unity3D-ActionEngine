@@ -14,8 +14,10 @@ namespace ActionEngine {
 		}
 
 		private ActionBase action_;
-		private bool unscaled_ = false;
 		private InstanceState state_ = InstanceState.READY;
+
+		private bool unscaled_ = false;
+		private float queuedDelay_ = 0f;
 
 		public InstanceState State { get { return state_; } }
 
@@ -24,8 +26,13 @@ namespace ActionEngine {
 
 		#region Parameters
 
-		public ActionInstance SetUnscaled (bool unscaled) {
+		public ActionInstance Unscaled (bool unscaled) {
 			unscaled_ = unscaled;
+			return this;
+		}
+
+		public ActionInstance AddDelay (float delay) {
+			queuedDelay_ += delay;
 			return this;
 		}
 
@@ -56,6 +63,12 @@ namespace ActionEngine {
 			var dt = (curTime - oldTime_);
 			oldTime_ = curTime;
 
+			queuedDelay_ -= dt;
+			if (queuedDelay_ > 0f)
+				return;
+
+			queuedDelay_ = 0f;
+
 			if (Simulate(dt))
 				Complete();
 		}
@@ -84,8 +97,11 @@ namespace ActionEngine {
 			if (action_ != null)
 				action_.Kill();
 
-			state_ = InstanceState.KILLED;
 			action_ = null;
+			state_ = InstanceState.KILLED;
+
+			unscaled_ = false;
+			queuedDelay_ = 0f;
 		}
 
 		private bool Simulate (float deltaTime) {
