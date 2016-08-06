@@ -29,6 +29,14 @@ namespace ActionEngine {
 				.Duration(duration);
 		}
 
+		public static Vector3TweenAction AEScale (this Transform obj, float scale, float duration) {
+			return AE.Action<Vector3TweenAction>()
+				.Getter(() => obj.localScale)
+				.Setter((x) => obj.localScale = x)
+				.EndValue(Vector3.one * scale)
+				.Duration(duration);
+		}
+
 		public static Vector3TweenAction AERotate (this Transform obj, Vector3 angle, float duration) {
 			return AE.Action<Vector3TweenAction>()
 				.Getter(() => obj.eulerAngles)

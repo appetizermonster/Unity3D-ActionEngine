@@ -15,12 +15,12 @@ public static class VeryAwesomeAEX {
 					// You can use another AEX
 					simpleAEX.Create(),
 					// Basic tweens
-					cube.AEMove(new Vector3(0, -3, 0), 3.5f).Easing(Easings.OutQuad),
-					sphere.AEMove(new Vector3(0, 3, 0), 4.5f).Easing(Easings.OutBack)
+					cube.AEMove(new Vector3(0, -3, 0), 3.5f).Easing(Easings.BounceInOut),
+					sphere.AEMove(new Vector3(0, 3, 0), 4.5f).Easing(Easings.ElasticOut)
                 ),
 				AE.Parallel(
-					cube.AEMove(new Vector3(0, 3, 0), 2.5f).Relative(true).Easing(Easings.InBack),
-					sphere.AEMove(new Vector3(0, -3, 0), 3.5f).Relative(true).Easing(Easings.OutQuad)
+					cube.AEMove(new Vector3(0, 3, 0), 2.5f).Relative(true).Easing(Easings.BackOut),
+					sphere.AEMove(new Vector3(0, -3, 0), 3.5f).Relative(true).Easing(Easings.QuadOut)
 				),
 				AE.Delay(0.5f),
 				AE.Debug("All Completed!")
