@@ -9,6 +9,8 @@ namespace ActionEngine {
 
 		[SerializeField]
 		private bool playOnAwake;
+		[SerializeField]
+		private bool unscaled;
 
 		[SerializeField]
 		private TextAsset scriptSource;
@@ -44,7 +46,7 @@ namespace ActionEngine {
 
 			var action = CreateAction(useReflectionOnly);
 			if (action != null) {
-				curActionInstance_ = action.Play();
+				curActionInstance_ = action.Play().Unscaled(unscaled);
 			} else {
 				Debug.LogErrorFormat("Can't create an action from '{0}'" + __assignedScriptName);
 			}

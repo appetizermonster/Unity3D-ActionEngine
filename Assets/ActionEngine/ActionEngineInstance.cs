@@ -42,11 +42,19 @@ namespace ActionEngine {
 			return pool;
 		}
 
-		public ActionInstance Compile (ActionBase action) {
+		public ActionInstance Enqueue (ActionBase action) {
 			var actionInstance = new ActionInstance();
 			actionInstance.SetAction(action);
 			playingInstances_.Add(actionInstance);
 			return actionInstance;
+		}
+
+		public void KillAll () {
+			for (var i = 0; i < playingInstances_.Count; ++i) {
+				var actionInstance = playingInstances_[i];
+				actionInstance.Kill();
+			}
+			playingInstances_.Clear();
 		}
 
 		private readonly List<ActionInstance> playingInstances_ = new List<ActionInstance>();

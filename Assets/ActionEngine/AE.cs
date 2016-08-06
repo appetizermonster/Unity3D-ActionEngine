@@ -20,12 +20,16 @@ namespace ActionEngine {
 			return GetInstance().Action<T>();
 		}
 
-		public static ActionInstance Compile (this ActionBase action) {
-			return GetInstance().Compile(action);
+		public static ActionInstance Enqueue (this ActionBase action) {
+			return GetInstance().Enqueue(action);
+		}
+
+		public static void KillAll () {
+			GetInstance().KillAll();
 		}
 
 		public static ActionInstance Play (this ActionBase action) {
-			return action.Compile().Play();
+			return action.Enqueue().Play();
 		}
 
 		#region Action Shortcuts
