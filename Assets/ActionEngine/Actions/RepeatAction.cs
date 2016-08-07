@@ -18,7 +18,7 @@ namespace ActionEngine {
 		}
 
 		public RepeatAction SetAction (ActionBase action) {
-			action.SetOwner(this);
+			action._SetOwner(this);
 			action_ = action;
 			return this;
 		}
@@ -26,40 +26,40 @@ namespace ActionEngine {
 		#endregion Parameters
 
 		protected override void OnBegin () {
-			action_.Begin();
+			action_._Begin();
 		}
 
 		protected override bool OnUpdate (float deltaTime) {
 			for (var i = 0; i < 100; ++i) {
-				if (action_.Update(deltaTime) == false)
+				if (action_._Update(deltaTime) == false)
 					break;
 
-				action_.Complete();
+				action_._Complete();
 
 				curLoop_ += 1;
 
 				if (loops_ != INFINITY && curLoop_ >= loops_)
 					return true;
 
-				action_.Rewind();
-				action_.Begin();
+				action_._Rewind();
+				action_._Begin();
 			}
 			return false;
 		}
 
 		protected override void OnComplete () {
 			if (action_.State == InternalState.BEGIN)
-				action_.Complete();
+				action_._Complete();
 		}
 
 		protected override void OnRewind () {
-			action_.Rewind();
+			action_._Rewind();
 			curLoop_ = 0;
 		}
 
 		protected override void OnKill () {
 			if (action_ != null)
-				action_.Kill();
+				action_._Kill();
 
 			loops_ = 1;
 			curLoop_ = 0;

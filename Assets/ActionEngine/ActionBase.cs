@@ -20,17 +20,17 @@ namespace ActionEngine {
 
 		internal InternalState State { get { return state_; } }
 
-		internal void SetActionPool (IActionPool actionPool) {
+		internal void _SetActionPool (IActionPool actionPool) {
 			actionPool_ = actionPool;
 		}
 
-		internal void SetOwner (ActionBase action) {
+		internal void _SetOwner (ActionBase action) {
 			if (owner_ != null)
 				throw new Exception("This action have been owned by another action");
 			owner_ = action;
 		}
 
-		internal void Begin () {
+		internal void _Begin () {
 			if (state_ != InternalState.READY_TO_BEGIN)
 				return;
 
@@ -38,13 +38,13 @@ namespace ActionEngine {
 			state_ = InternalState.BEGIN;
 		}
 
-		internal bool Update (float deltaTime) {
+		internal bool _Update (float deltaTime) {
 			if (state_ != InternalState.BEGIN)
 				return true;
 			return OnUpdate(deltaTime);
 		}
 
-		internal void Complete () {
+		internal void _Complete () {
 			if (state_ != InternalState.BEGIN)
 				return;
 
@@ -52,11 +52,11 @@ namespace ActionEngine {
 			state_ = InternalState.READY_TO_BEGIN;
 		}
 
-		internal void Rewind () {
+		internal void _Rewind () {
 			OnRewind();
 		}
 
-		internal void Kill () {
+		internal void _Kill () {
 			OnKill();
 
 			// Reset All States

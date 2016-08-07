@@ -11,7 +11,7 @@ namespace ActionEngine {
 		#region Parameters
 
 		public SequenceAction AddAction (ActionBase action) {
-			action.SetOwner(this);
+			action._SetOwner(this);
 			actions_.Add(action);
 			return this;
 		}
@@ -28,15 +28,15 @@ namespace ActionEngine {
 			if (curIndex_ < 0) {
 				curIndex_ = 0;
 				curAction = actions_[0];
-				curAction.Begin();
+				curAction._Begin();
 			} else {
 				curAction = actions_[curIndex_];
 			}
 
 			for (var i = 0; i < 100; ++i) {
-				if (curAction.Update(dt) == false)
+				if (curAction._Update(dt) == false)
 					break;
-				curAction.Complete();
+				curAction._Complete();
 
 				curIndex_ += 1;
 				if (curIndex_ >= actions_.Count)
@@ -45,7 +45,7 @@ namespace ActionEngine {
 				dt = 0f;
 
 				curAction = actions_[curIndex_];
-				curAction.Begin();
+				curAction._Begin();
 			}
 			return false;
 		}
@@ -55,11 +55,11 @@ namespace ActionEngine {
 				return;
 
 			if (curIndex_ >= 0)
-				actions_[curIndex_].Complete();
+				actions_[curIndex_]._Complete();
 
 			for (var i = curIndex_ + 1; i < actions_.Count; ++i) {
-				actions_[i].Begin();
-				actions_[i].Complete();
+				actions_[i]._Begin();
+				actions_[i]._Complete();
 			}
 		}
 
@@ -67,13 +67,13 @@ namespace ActionEngine {
 			curIndex_ = -1;
 
 			for (var i = 0; i < actions_.Count; ++i) {
-				actions_[i].Rewind();
+				actions_[i]._Rewind();
 			}
 		}
 
 		protected override void OnKill () {
 			for (var i = 0; i < actions_.Count; ++i) {
-				actions_[i].Kill();
+				actions_[i]._Kill();
 			}
 
 			actions_.Clear();

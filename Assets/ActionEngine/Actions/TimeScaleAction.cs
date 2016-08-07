@@ -22,23 +22,23 @@ namespace ActionEngine {
 		#endregion Parameters
 
 		protected override void OnBegin () {
-			action_.Begin();
+			action_._Begin();
 		}
 
 		protected override bool OnUpdate (float deltaTime) {
-			return action_.Update(deltaTime * timeScale_);
+			return action_._Update(deltaTime * timeScale_);
 		}
 
 		protected override void OnComplete () {
-			action_.Complete();
+			action_._Complete();
 		}
 
 		protected override void OnRewind () {
-			action_.Rewind();
+			action_._Rewind();
 		}
 
 		protected override void OnKill () {
-			action_.Kill();
+			action_._Kill();
 
 			action_ = null;
 			timeScale_ = 1f;

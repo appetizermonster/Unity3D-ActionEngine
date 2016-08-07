@@ -33,7 +33,7 @@ namespace ActionEngine {
 
 		#endregion Parameters
 
-		internal void SetAction (ActionBase action) {
+		internal void _SetAction (ActionBase action) {
 			action_ = action;
 		}
 
@@ -48,12 +48,12 @@ namespace ActionEngine {
 			state_ = InstanceState.PLAYING;
 			oldTime_ = GetLocalTime();
 
-			action_.Begin();
+			action_._Begin();
 
 			return this;
 		}
 
-		internal void InternalUpdate () {
+		internal void _InternalUpdate () {
 			if (state_ != InstanceState.PLAYING)
 				return;
 
@@ -87,13 +87,13 @@ namespace ActionEngine {
 		}
 
 		public void Complete () {
-			action_.Complete();
+			action_._Complete();
 			Kill();
 		}
 
 		public void Kill () {
 			if (action_ != null)
-				action_.Kill();
+				action_._Kill();
 
 			action_ = null;
 			state_ = InstanceState.KILLED;
@@ -103,7 +103,7 @@ namespace ActionEngine {
 		}
 
 		private bool Simulate (float deltaTime) {
-			return action_.Update(deltaTime);
+			return action_._Update(deltaTime);
 		}
 
 		private float GetLocalTime () {

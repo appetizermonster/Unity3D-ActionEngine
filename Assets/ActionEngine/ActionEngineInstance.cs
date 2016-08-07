@@ -19,7 +19,7 @@ namespace ActionEngine {
 
 			if (pool.Count <= 0) {
 				var action = new T();
-				action.SetActionPool(this);
+				action._SetActionPool(this);
 				return action;
 			}
 
@@ -44,7 +44,7 @@ namespace ActionEngine {
 
 		public ActionInstance Enqueue (ActionBase action) {
 			var actionInstance = new ActionInstance();
-			actionInstance.SetAction(action);
+			actionInstance._SetAction(action);
 			playingInstances_.Add(actionInstance);
 			return actionInstance;
 		}
@@ -65,7 +65,7 @@ namespace ActionEngine {
 
 			for (var i = 0; i < playingInstances_.Count; ++i) {
 				var actionInstance = playingInstances_[i];
-				actionInstance.InternalUpdate();
+				actionInstance._InternalUpdate();
 
 				if (actionInstance.State == ActionInstance.InstanceState.KILLED)
 					removalList_.Add(actionInstance);

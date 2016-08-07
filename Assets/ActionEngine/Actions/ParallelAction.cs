@@ -17,7 +17,7 @@ namespace ActionEngine {
 		#region Parameters
 
 		public ParallelAction AddAction (ActionBase action) {
-			action.SetOwner(this);
+			action._SetOwner(this);
 			actions_.Add(action);
 			playStates_.Add(PlayState.INCOMPLETE);
 			return this;
@@ -27,7 +27,7 @@ namespace ActionEngine {
 
 		protected override void OnBegin () {
 			for (var i = 0; i < actions_.Count; ++i) {
-				actions_[i].Begin();
+				actions_[i]._Begin();
 			}
 		}
 
@@ -40,12 +40,12 @@ namespace ActionEngine {
 					continue;
 
 				var action = actions_[i];
-				if (action.Update(deltaTime) == false) {
+				if (action._Update(deltaTime) == false) {
 					allCompleted = false;
 					continue;
 				}
 
-				action.Complete();
+				action._Complete();
 				playStates_[i] = PlayState.COMPLETE;
 			}
 
@@ -59,7 +59,7 @@ namespace ActionEngine {
 					continue;
 
 				var action = actions_[i];
-				action.Complete();
+				action._Complete();
 
 				playStates_[i] = PlayState.COMPLETE;
 			}
@@ -69,14 +69,14 @@ namespace ActionEngine {
 			playStates_.Clear();
 
 			for (var i = 0; i < actions_.Count; ++i) {
-				actions_[i].Rewind();
+				actions_[i]._Rewind();
 				playStates_.Add(PlayState.INCOMPLETE);
 			}
 		}
 
 		protected override void OnKill () {
 			for (var i = 0; i < actions_.Count; ++i) {
-				actions_[i].Kill();
+				actions_[i]._Kill();
 			}
 			actions_.Clear();
 			playStates_.Clear();
