@@ -52,5 +52,25 @@ namespace ActionEngine {
 				.EndValue(angle)
 				.Duration(duration);
 		}
+
+		public static PathAction AEPath (this Transform obj, float duration, params Vector3[] points) {
+			var action = AE.Action<PathAction>()
+				.Setter((x) => obj.position = x)
+				.Duration(duration);
+			for (var i = 0; i < points.Length; ++i) {
+				action.AddPoint(points[i]);
+			}
+			return action;
+		}
+		
+		public static PathAction AELocalPath (this Transform obj, float duration, params Vector3[] points) {
+			var action = AE.Action<PathAction>()
+				.Setter((x) => obj.localPosition = x)
+				.Duration(duration);
+			for (var i = 0; i < points.Length; ++i) {
+				action.AddPoint(points[i]);
+			}
+			return action;
+		}
 	}
 }
