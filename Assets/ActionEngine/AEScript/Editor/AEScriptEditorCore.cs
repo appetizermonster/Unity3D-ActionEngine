@@ -41,22 +41,23 @@ namespace ActionEngine {
 			if (errors != null && errors.Count > 0) {
 				for (var i = 0; i < errors.Count; ++i) {
 					var error = errors[i];
+					if (error.IsWarning)
+						continue;
+
 					var msg = string.Format("{0} from {1}, Line {2}", error.ErrorText, script.name, error.Line);
-					if (error.IsWarning) {
-						Debug.LogWarning(msg, script);
-					} else {
-						Debug.LogError(msg, script);
-					}
+					Debug.LogError(msg, script);
 				}
-				return null;
 			}
 
-			var assembly = results.CompiledAssembly;
-			var className = script.name;
-			var createMethod = assembly.GetType(className).GetMethod("Create");
-
-			var actionBase = createMethod.Invoke(null, new object[] { context }) as ActionBase;
-			return actionBase;
+			try {
+				var assembly = results.CompiledAssembly;
+				var className = script.name;
+				var createMethod = assembly.GetType(className).GetMethod("Create");
+				return createMethod.Invoke(null, new object[] { context }) as ActionBase;
+			} catch (Exception) {
+				// Consume it
+			}
+			return null;
 		}
 	}
 }
