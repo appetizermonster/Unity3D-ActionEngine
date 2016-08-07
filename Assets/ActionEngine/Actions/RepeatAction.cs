@@ -12,12 +12,12 @@ namespace ActionEngine {
 
 		#region Parameters
 
-		public RepeatAction Loops (int loops) {
+		public RepeatAction SetLoops (int loops) {
 			loops_ = loops;
 			return this;
 		}
 
-		public RepeatAction Action (ActionBase action) {
+		public RepeatAction SetAction (ActionBase action) {
 			action.SetOwner(this);
 			action_ = action;
 			return this;

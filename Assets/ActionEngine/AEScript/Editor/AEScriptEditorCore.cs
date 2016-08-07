@@ -2,6 +2,7 @@
 using System;
 using System.CodeDom.Compiler;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -15,8 +16,8 @@ namespace ActionEngine {
 			AEScriptEditorBridge.createActionFunc_ = CreateActionFromScript;
 		}
 
-		private static ActionBase CreateActionFromScript (AEScriptRunner script) {
-			return CreateActionFromScript(script.ScriptSource, script.GetContext());
+		private static ActionBase CreateActionFromScript (AEScriptRunner script, Dictionary<string, object> overrideData) {
+			return CreateActionFromScript(script.ScriptSource, script.GetContext(overrideData));
 		}
 
 		private static ActionBase CreateActionFromScript (TextAsset script, IAEScriptContext context) {

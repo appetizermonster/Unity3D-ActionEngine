@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ActionEngine {
@@ -26,58 +27,66 @@ namespace ActionEngine {
 	}
 
 	public sealed class AEScriptContext : IAEScriptContext {
-		private AEScriptRunner runner_ = null;
+		private readonly AEScriptRunner runner_ = null;
+		private readonly Dictionary<string, object> overrideData_ = null;
 
-		public AEScriptContext (AEScriptRunner runner) {
+		public AEScriptContext (AEScriptRunner runner, Dictionary<string, object> overrideData = null) {
 			runner_ = runner;
+			overrideData_ = overrideData;
 		}
 
 		public float GetFloat (string key) {
-			return FindData(key).@float;
+			return FindData(key, (x) => x.@float);
 		}
 
 		public int GetInt (string key) {
-			return FindData(key).@int;
+			return FindData(key, (x) => x.@int);
 		}
 
 		public bool GetBool (string key) {
-			return FindData(key).@bool;
+			return FindData(key, (x) => x.@bool);
 		}
 
 		public string GetString (string key) {
-			return FindData(key).@string;
+			return FindData(key, (x) => x.@string);
 		}
 
 		public Vector2 GetVector2 (string key) {
-			return FindData(key).@vector2;
+			return FindData(key, (x) => x.@vector2);
 		}
 
 		public Vector3 GetVector3 (string key) {
-			return FindData(key).@vector3;
+			return FindData(key, (x) => x.vector3);
 		}
 
 		public Transform GetTransform (string key) {
-			return FindData(key).@transform;
+			return FindData(key, (x) => x.@transform);
 		}
 
 		public GameObject GetGameObject (string key) {
-			return FindData(key).@gameobject;
+			return FindData(key, (x) => x.@gameobject);
 		}
 
 		public AEScriptRunner GetAEScript (string key) {
-			return FindData(key).@aescript;
+			return FindData(key, (x) => x.@aescript);
 		}
 
 		private static AEScriptData defaultData_ = new AEScriptData();
 
-		private AEScriptData FindData (string key) {
+		private T FindData<T>(string key, Func<AEScriptData, T> accessor) {
+			if (overrideData_ != null) {
+				object overrideValue;
+				if (overrideData_.TryGetValue(key, out overrideValue))
+					return (T)overrideValue;
+			}
+
 			var store = runner_.DataStore;
 			for (var i = 0; i < store.Length; ++i) {
 				var data = store[i];
 				if (data.key == key)
-					return data;
+					return accessor(data);
 			}
-			return defaultData_;
+			return accessor(defaultData_);
 		}
 	}
 }

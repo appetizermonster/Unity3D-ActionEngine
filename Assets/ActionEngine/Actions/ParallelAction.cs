@@ -16,7 +16,7 @@ namespace ActionEngine {
 
 		#region Parameters
 
-		public ParallelAction Add (ActionBase action) {
+		public ParallelAction AddAction (ActionBase action) {
 			action.SetOwner(this);
 			actions_.Add(action);
 			playStates_.Add(PlayState.INCOMPLETE);

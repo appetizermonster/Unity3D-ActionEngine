@@ -12,7 +12,7 @@ namespace ActionEngine {
 
 		#region Parameters
 
-		public CoroutineAction Coroutine (Func<IEnumerator> routineGenerator) {
+		public CoroutineAction SetCoroutine (Func<IEnumerator> routineGenerator) {
 			routineGenerator_ = routineGenerator;
 			return this;
 		}

@@ -10,7 +10,7 @@ namespace ActionEngine {
 
 		#region Parameters
 
-		public SequenceAction Add (ActionBase action) {
+		public SequenceAction AddAction (ActionBase action) {
 			action.SetOwner(this);
 			actions_.Add(action);
 			return this;

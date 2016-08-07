@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ namespace ActionEngine {
 
 		[SerializeField]
 		private bool playOnAwake;
+
 		[SerializeField]
 		private bool unscaled;
 
@@ -48,7 +50,7 @@ namespace ActionEngine {
 		private ActionInstance Internal_Play (bool useReflectionOnly = false) {
 			curActionInstance_ = null;
 
-			var action = CreateAction(useReflectionOnly);
+			var action = CreateAction(null, useReflectionOnly);
 			if (action != null) {
 				curActionInstance_ = action.Play(unscaled);
 			} else {
@@ -81,21 +83,21 @@ namespace ActionEngine {
 		/// Create an Action for self control
 		/// </summary>
 		/// <returns>Action</returns>
-		public ActionBase Create () {
-			return CreateAction();
+		public ActionBase Create (Dictionary<string, object> overrideData = null) {
+			return CreateAction(overrideData, false);
 		}
 
-		private ActionBase CreateAction (bool useReflectionOnly = false) {
+		private ActionBase CreateAction (Dictionary<string, object> overrideData = null, bool useReflectionOnly = false) {
 			ActionBase action = null;
 #if UNITY_EDITOR
 			if (!useReflectionOnly) {
 				// Create Action using CSharpCodeProvider
-				action = AEScriptEditorBridge.CreateActionFromScript(this);
+				action = AEScriptEditorBridge.CreateActionFromScript(this, overrideData);
 			}
 #endif
 			// Create Action using Reflection, Calling real script code
 			if (action == null)
-				action = CallAEScript(GetContext());
+				action = CallAEScript(GetContext(overrideData));
 
 			if (action == null)
 				throw new InvalidOperationException("Can't create a action");
@@ -124,15 +126,18 @@ namespace ActionEngine {
 				return;
 			}
 
-            aeScriptMethod_ = scriptType.GetMethod("Create");
+			aeScriptMethod_ = scriptType.GetMethod("Create");
 		}
 
-		private IAEScriptContext context_ = null;
+		private IAEScriptContext defaultContext_ = null;
 
-		public IAEScriptContext GetContext () {
-			if (context_ == null)
-				context_ = new AEScriptContext(this);
-			return context_;
+		public IAEScriptContext GetContext (Dictionary<string, object> overrideData = null) {
+			if (overrideData != null)
+				return new AEScriptContext(this, overrideData);
+
+			if (defaultContext_ == null)
+				defaultContext_ = new AEScriptContext(this);
+			return defaultContext_;
 		}
 
 #if UNITY_EDITOR

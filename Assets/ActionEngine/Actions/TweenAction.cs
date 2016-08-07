@@ -103,32 +103,32 @@ namespace ActionEngine {
 
 		#region Parameters
 
-		public ConcreteClass Getter (Func<T> getter) {
+		public ConcreteClass SetGetter (Func<T> getter) {
 			getter_ = getter;
 			return (ConcreteClass)((object)this);
 		}
 
-		public ConcreteClass Setter (Action<T> setter) {
+		public ConcreteClass SetSetter (Action<T> setter) {
 			setter_ = setter;
 			return (ConcreteClass)((object)this);
 		}
 
-		public ConcreteClass EndValue (T endValue) {
+		public ConcreteClass SetEndValue (T endValue) {
 			endValue_ = endValue;
 			return (ConcreteClass)((object)this);
 		}
 
-		public ConcreteClass Duration (float duration) {
+		public ConcreteClass SetDuration (float duration) {
 			duration_ = duration;
 			return (ConcreteClass)((object)this);
 		}
 
-		public ConcreteClass Relative (bool relative) {
+		public ConcreteClass SetRelative (bool relative) {
 			relative_ = relative;
 			return (ConcreteClass)((object)this);
 		}
 
-		public ConcreteClass Easing (EaseFunction easing) {
+		public ConcreteClass SetEasing (EaseFunction easing) {
 			easing_ = easing;
 			return (ConcreteClass)((object)this);
 		}

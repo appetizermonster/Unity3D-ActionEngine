@@ -35,43 +35,43 @@ namespace ActionEngine {
 		#region Action Shortcuts
 
 		public static CoroutineAction Coroutine (Func<IEnumerator> routineGenerator) {
-			return Action<CoroutineAction>().Coroutine(routineGenerator);
+			return Action<CoroutineAction>().SetCoroutine(routineGenerator);
 		}
 
 		public static DebugAction Debug (object message, UnityEngine.Object context = null) {
-			return Action<DebugAction>().Message(message, context);
+			return Action<DebugAction>().SetMessage(message, context);
 		}
 
 		public static DelayAction Delay (float duration) {
-			return Action<DelayAction>().Duration(duration);
+			return Action<DelayAction>().SetDuration(duration);
 		}
 
 		public static ParallelAction Parallel (params ActionBase[] actions) {
 			var par = Action<ParallelAction>();
 			for (var i = 0; i < actions.Length; ++i) {
-				par.Add(actions[i]);
+				par.AddAction(actions[i]);
 			}
 			return par;
 		}
 
 		public static RepeatAction Repeat (ActionBase action) {
-			return Action<RepeatAction>().Action(action);
+			return Action<RepeatAction>().SetAction(action);
 		}
 
 		public static ScriptAction Script (Action script) {
-			return Action<ScriptAction>().Script(script);
+			return Action<ScriptAction>().SetScript(script);
 		}
 
 		public static SequenceAction Sequence (params ActionBase[] actions) {
 			var seq = Action<SequenceAction>();
 			for (var i = 0; i < actions.Length; ++i) {
-				seq.Add(actions[i]);
+				seq.AddAction(actions[i]);
 			}
 			return seq;
 		}
 
 		public static TimeScaleAction TimeScale (ActionBase action) {
-			return Action<TimeScaleAction>().Action(action);
+			return Action<TimeScaleAction>().SetAction(action);
 		}
 
 		#endregion Action Shortcuts

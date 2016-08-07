@@ -7,56 +7,56 @@ namespace ActionEngine {
 
 		public static Vector3TweenAction AEMove (this Transform obj, Vector3 position, float duration) {
 			return AE.Action<Vector3TweenAction>()
-				.Getter(() => obj.position)
-				.Setter((x) => obj.position = x)
-				.EndValue(position)
-				.Duration(duration);
+				.SetGetter(() => obj.position)
+				.SetSetter((x) => obj.position = x)
+				.SetEndValue(position)
+				.SetDuration(duration);
 		}
 
 		public static Vector3TweenAction AELocalMove (this Transform obj, Vector3 position, float duration) {
 			return AE.Action<Vector3TweenAction>()
-				.Getter(() => obj.localPosition)
-				.Setter((x) => obj.localPosition = x)
-				.EndValue(position)
-				.Duration(duration);
+				.SetGetter(() => obj.localPosition)
+				.SetSetter((x) => obj.localPosition = x)
+				.SetEndValue(position)
+				.SetDuration(duration);
 		}
 
 		public static Vector3TweenAction AEScale (this Transform obj, Vector3 scale, float duration) {
 			return AE.Action<Vector3TweenAction>()
-				.Getter(() => obj.localScale)
-				.Setter((x) => obj.localScale = x)
-				.EndValue(scale)
-				.Duration(duration);
+				.SetGetter(() => obj.localScale)
+				.SetSetter((x) => obj.localScale = x)
+				.SetEndValue(scale)
+				.SetDuration(duration);
 		}
 
 		public static Vector3TweenAction AEScale (this Transform obj, float scale, float duration) {
 			return AE.Action<Vector3TweenAction>()
-				.Getter(() => obj.localScale)
-				.Setter((x) => obj.localScale = x)
-				.EndValue(Vector3.one * scale)
-				.Duration(duration);
+				.SetGetter(() => obj.localScale)
+				.SetSetter((x) => obj.localScale = x)
+				.SetEndValue(Vector3.one * scale)
+				.SetDuration(duration);
 		}
 
 		public static Vector3TweenAction AERotate (this Transform obj, Vector3 angle, float duration) {
 			return AE.Action<Vector3TweenAction>()
-				.Getter(() => obj.eulerAngles)
-				.Setter((x) => obj.eulerAngles = x)
-				.EndValue(angle)
-				.Duration(duration);
+				.SetGetter(() => obj.eulerAngles)
+				.SetSetter((x) => obj.eulerAngles = x)
+				.SetEndValue(angle)
+				.SetDuration(duration);
 		}
 
 		public static Vector3TweenAction AELocalRotate (this Transform obj, Vector3 angle, float duration) {
 			return AE.Action<Vector3TweenAction>()
-				.Getter(() => obj.localEulerAngles)
-				.Setter((x) => obj.localEulerAngles = x)
-				.EndValue(angle)
-				.Duration(duration);
+				.SetGetter(() => obj.localEulerAngles)
+				.SetSetter((x) => obj.localEulerAngles = x)
+				.SetEndValue(angle)
+				.SetDuration(duration);
 		}
 
 		public static PathAction AEPath (this Transform obj, float duration, params Vector3[] points) {
 			var action = AE.Action<PathAction>()
-				.Setter((x) => obj.position = x)
-				.Duration(duration);
+				.SetSetter((x) => obj.position = x)
+				.SetDuration(duration);
 			for (var i = 0; i < points.Length; ++i) {
 				action.AddPoint(points[i]);
 			}
@@ -65,8 +65,8 @@ namespace ActionEngine {
 		
 		public static PathAction AELocalPath (this Transform obj, float duration, params Vector3[] points) {
 			var action = AE.Action<PathAction>()
-				.Setter((x) => obj.localPosition = x)
-				.Duration(duration);
+				.SetSetter((x) => obj.localPosition = x)
+				.SetDuration(duration);
 			for (var i = 0; i < points.Length; ++i) {
 				action.AddPoint(points[i]);
 			}

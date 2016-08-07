@@ -9,7 +9,7 @@ namespace ActionEngine {
 
 		#region Parameters
 
-		public DelayAction Duration (float duration) {
+		public DelayAction SetDuration (float duration) {
 			duration_ = duration;
 			return this;
 		}

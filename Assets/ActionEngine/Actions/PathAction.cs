@@ -19,7 +19,7 @@ namespace ActionEngine {
 
 		#region Parameters
 
-		public PathAction Setter (Action<Vector3> setter) {
+		public PathAction SetSetter (Action<Vector3> setter) {
 			setter_ = setter;
 			return this;
 		}
@@ -29,12 +29,12 @@ namespace ActionEngine {
 			return this;
 		}
 
-		public PathAction Duration (float duration) {
+		public PathAction SetDuration (float duration) {
 			duration_ = duration;
 			return this;
 		}
 
-		public PathAction Easing (EaseFunction easing) {
+		public PathAction SetEasing (EaseFunction easing) {
 			easing_ = easing;
 			return this;
 		}

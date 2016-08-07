@@ -9,7 +9,7 @@ namespace ActionEngine {
 
 		#region Parameters
 
-		public ScriptAction Script (Action script) {
+		public ScriptAction SetScript (Action script) {
 			script_ = script;
 			return this;
 		}

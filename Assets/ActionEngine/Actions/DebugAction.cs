@@ -9,7 +9,7 @@ namespace ActionEngine {
 
 		#region Parameters
 
-		public DebugAction Message (object message, Object context = null) {
+		public DebugAction SetMessage (object message, Object context = null) {
 			message_ = message;
 			context_ = context;
 			return this;

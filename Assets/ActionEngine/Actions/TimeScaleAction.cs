@@ -9,12 +9,12 @@ namespace ActionEngine {
 
 		#region Parameters
 
-		public TimeScaleAction Action (ActionBase action) {
+		public TimeScaleAction SetAction (ActionBase action) {
 			action_ = action;
 			return this;
 		}
 
-		public TimeScaleAction TimeScale (float timeScale) {
+		public TimeScaleAction SetTimeScale (float timeScale) {
 			timeScale_ = timeScale;
 			return this;
 		}
