@@ -1,6 +1,6 @@
 # ActionEngine
 
-Simple, powerful, productive Action Engine for Unity3D, inspired by DOTween, Cocos2d
+Simple Tween-like Engine for Unity3D, which supports Live code editing
 
 **[Currently, Under heavy development]**
 
@@ -60,9 +60,7 @@ public static class SomethingAEX {
 public static class SomethingAEX {
 
   public static ActionBase Create (IAEScriptContext ctx) {
-    return AE.Coroutine(
-      () => TestCoroutine()
-    );
+    return AE.WaitCoroutine(() => TestCoroutine());
   }
 
   private static IEnumerator TestCoroutine () {
