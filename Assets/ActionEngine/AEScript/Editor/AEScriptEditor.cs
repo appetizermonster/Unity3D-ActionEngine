@@ -58,7 +58,13 @@ namespace ActionEngine {
 
 		private void ReloadAndPlay (AEScriptRunner obj) {
 			obj.Kill();
-			obj.Play().AddDelay(1f); // Add delay to compensate script loading time
+			obj.Load();
+
+			// Add delay to compensate script loading time
+			AE.Sequence(
+				AE.Delay(0.5f),
+				AE.Script(() => obj.Play())
+			).Play(true);
 		}
 
 		private void Kill (AEScriptRunner obj) {

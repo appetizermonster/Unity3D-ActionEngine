@@ -85,9 +85,6 @@ namespace ActionEngine {
 	}
 
 	public abstract class TweenActionBase<ConcreteClass, T> : ActionBase where ConcreteClass : ActionBase {
-
-		public delegate float EaseFunction (float p);
-
 		private Func<T> getter_ = null;
 		private Action<T> setter_ = null;
 
@@ -97,7 +94,7 @@ namespace ActionEngine {
 
 		private float duration_ = 0f;
 		private bool relative_ = false;
-		private EaseFunction easing_ = null;
+		private EasingFunc easing_ = null;
 
 		private float elapsed_ = 0f;
 
@@ -128,7 +125,7 @@ namespace ActionEngine {
 			return (ConcreteClass)((object)this);
 		}
 
-		public ConcreteClass SetEasing (EaseFunction easing) {
+		public ConcreteClass SetEasing (EasingFunc easing) {
 			easing_ = easing;
 			return (ConcreteClass)((object)this);
 		}
@@ -143,6 +140,9 @@ namespace ActionEngine {
 			} else {
 				finalValue_ = endValue_;
 			}
+
+			// Apply initial state
+			setter_(startValue_);
 		}
 
 		protected override bool OnUpdate (float deltaTime) {
@@ -152,10 +152,7 @@ namespace ActionEngine {
 			if (duration_ > 0)
 				p = Mathf.Clamp01(elapsed_ / duration_);
 
-			var easedP = p;
-			if (easing_ != null)
-				easedP = easing_(p);
-
+			var easedP = (easing_ != null) ? easing_(p) : Easings.QuadInOut(p);
 			var curValue = Lerp(startValue_, finalValue_, easedP);
 			setter_(curValue);
 

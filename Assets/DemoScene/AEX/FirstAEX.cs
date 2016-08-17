@@ -24,7 +24,7 @@ public static class FirstAEX {
 				),
 				sphere.AEScale(1f, 1f).SetEasing(Easings.BounceOut),
 				// Coroutine
-				AE.Coroutine(() => DelayCoroutine()),
+				AE.WaitCoroutine(() => DelayCoroutine()),
 				// Play another AEX
 				secondAEX.Create(new Dictionary<string, object> {
 					{"$duration", 10f }

@@ -18,6 +18,11 @@ namespace ActionEngine {
 
 		#endregion Parameters
 
+		protected override void OnBegin () {
+			// Begin initial action
+			OnUpdate(0f);
+		}
+
 		protected override bool OnUpdate (float deltaTime) {
 			if (actions_.Count <= 0)
 				return true;
@@ -29,9 +34,12 @@ namespace ActionEngine {
 				curIndex_ = 0;
 				curAction = actions_[0];
 				curAction._Begin();
-			} else {
+			} else if (curIndex_ < actions_.Count) {
 				curAction = actions_[curIndex_];
 			}
+
+			if (curAction == null)
+				return true;
 
 			for (var i = 0; i < 100; ++i) {
 				if (curAction._Update(dt) == false)

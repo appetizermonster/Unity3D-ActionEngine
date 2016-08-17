@@ -6,13 +6,10 @@ using UnityEngine;
 namespace ActionEngine {
 
 	public sealed class PathAction : ActionBase {
-
-		public delegate float EaseFunction (float p);
-
 		private Action<Vector3> setter_ = null;
 
 		private float duration_ = 0f;
-		private EaseFunction easing_ = null;
+		private EasingFunc easing_ = null;
 
 		private readonly List<Vector3> points_ = new List<Vector3>();
 		private float elapsed_ = 0f;
@@ -34,7 +31,7 @@ namespace ActionEngine {
 			return this;
 		}
 
-		public PathAction SetEasing (EaseFunction easing) {
+		public PathAction SetEasing (EasingFunc easing) {
 			easing_ = easing;
 			return this;
 		}

@@ -5,49 +5,48 @@ using UnityEngine;
 namespace ActionEngine {
 
 	public static class AE {
-		private static ActionEngineInstance instance_ = null;
+		private static ActionEngineInstance shortInstance_ = null;
 
-		private static ActionEngineInstance GetInstance () {
-			if (instance_ == null) {
+		private static ActionEngineInstance GetShortInstance () {
+			if (shortInstance_ == null) {
 				var go = new GameObject("[ActionEngineInstance]");
-				instance_ = go.AddComponent<ActionEngineInstance>();
-				GameObject.DontDestroyOnLoad(go);
+				shortInstance_ = go.AddComponent<ActionEngineInstance>();
 			}
-			return instance_;
+			return shortInstance_;
 		}
 
-		public static T Action<T>() where T : ActionBase, new() {
-			return GetInstance().Action<T>();
+		public static T Prepare<T>() where T : ActionBase, new() {
+			return ActionPool.GetInstance().GetAction<T>();
 		}
 
 		public static ActionInstance Enqueue (this ActionBase action) {
-			return GetInstance().Enqueue(action);
+			return GetShortInstance().Enqueue(action);
 		}
 
 		public static void KillAll () {
-			GetInstance().KillAll();
+			GetShortInstance().KillAll();
 		}
 
+		/// <summary>
+		/// Play the action with short instance, it means that the action will be killed after scene
+		/// has changed
+		/// </summary>
 		public static ActionInstance Play (this ActionBase action, bool unscaled = false) {
 			return action.Enqueue().Play(unscaled);
 		}
 
 		#region Action Shortcuts
 
-		public static CoroutineAction Coroutine (Func<IEnumerator> routineGenerator) {
-			return Action<CoroutineAction>().SetCoroutine(routineGenerator);
-		}
-
 		public static DebugAction Debug (object message, UnityEngine.Object context = null) {
-			return Action<DebugAction>().SetMessage(message, context);
+			return Prepare<DebugAction>().SetMessage(message, context);
 		}
 
 		public static DelayAction Delay (float duration) {
-			return Action<DelayAction>().SetDuration(duration);
+			return Prepare<DelayAction>().SetDuration(duration);
 		}
 
 		public static ParallelAction Parallel (params ActionBase[] actions) {
-			var par = Action<ParallelAction>();
+			var par = Prepare<ParallelAction>();
 			for (var i = 0; i < actions.Length; ++i) {
 				par.AddAction(actions[i]);
 			}
@@ -55,15 +54,15 @@ namespace ActionEngine {
 		}
 
 		public static RepeatAction Repeat (ActionBase action) {
-			return Action<RepeatAction>().SetAction(action);
+			return Prepare<RepeatAction>().SetAction(action);
 		}
 
 		public static ScriptAction Script (Action script) {
-			return Action<ScriptAction>().SetScript(script);
+			return Prepare<ScriptAction>().SetScript(script);
 		}
 
 		public static SequenceAction Sequence (params ActionBase[] actions) {
-			var seq = Action<SequenceAction>();
+			var seq = Prepare<SequenceAction>();
 			for (var i = 0; i < actions.Length; ++i) {
 				seq.AddAction(actions[i]);
 			}
@@ -71,7 +70,21 @@ namespace ActionEngine {
 		}
 
 		public static TimeScaleAction TimeScale (ActionBase action) {
-			return Action<TimeScaleAction>().SetAction(action);
+			return Prepare<TimeScaleAction>().SetAction(action);
+		}
+
+		public static FloatTweenAction Tween (Func<float> getter, Action<float> setter, float endValue, float duration) {
+			return Prepare<FloatTweenAction>()
+				.SetGetter(getter).SetSetter(setter)
+				.SetEndValue(endValue).SetDuration(duration);
+		}
+
+		public static WaitCoroutineAction WaitCoroutine (Func<object> coroutineGenerator) {
+			return Prepare<WaitCoroutineAction>().SetCoroutineGenerator(coroutineGenerator);
+		}
+
+		public static WaitUntilAction WaitUntil (Func<bool> predicate) {
+			return Prepare<WaitUntilAction>().SetPredicate(predicate);
 		}
 
 		#endregion Action Shortcuts

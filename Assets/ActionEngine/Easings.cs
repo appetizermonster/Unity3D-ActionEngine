@@ -169,5 +169,17 @@ namespace ActionEngine {
 		public static float BackOutIn (float p) {
 			return Easing.BackEaseOutIn(p, 0f, 1f, 1f);
 		}
+
+		public static EasingFunc Factory_SoftBounce (float bounces = 4, float stiffness = 3) {
+			float alpha = stiffness / 100f;
+			float threshold = 0.005f / Mathf.Pow(10, stiffness);
+			float limit = Mathf.Floor(Mathf.Log(threshold) / -alpha);
+			float omega = (bounces + 0.5f) * Mathf.PI / limit;
+
+			return (float p) => {
+				var t = p * limit;
+				return 1 - Mathf.Pow(2.718f, -alpha * t) * Mathf.Cos(omega * t);
+			};
+		}
 	}
 }

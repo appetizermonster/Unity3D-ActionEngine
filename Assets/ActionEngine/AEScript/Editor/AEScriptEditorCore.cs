@@ -1,7 +1,6 @@
 ﻿using Microsoft.CSharp;
 using System;
 using System.CodeDom.Compiler;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
@@ -21,8 +20,45 @@ namespace ActionEngine {
 		}
 
 		private static ActionBase CreateActionFromScript (TextAsset script, IAEScriptContext context) {
+			try {
+				var assembly = LoadAssembly(script);
+				var className = script.name;
+				var createMethod = assembly.GetType(className).GetMethod("Create");
+				return createMethod.Invoke(null, new object[] { context }) as ActionBase;
+			} catch (Exception) {
+				// Consume it
+			}
+			return null;
+		}
+
+		private static readonly Dictionary<string, string> cachedScripts_ = new Dictionary<string, string>();
+		private static readonly Dictionary<string, Assembly> cachedAssemblies_ = new Dictionary<string, Assembly>();
+
+		private static Assembly LoadAssembly (TextAsset script) {
+			var scriptName = script.name;
+			var scriptSource = FileUtil.ReadRawFile(script); // Don't use TextAsset.text because it could have outdated text
+
+			if (cachedScripts_.ContainsKey(scriptName)) {
+				var cachedSource = cachedScripts_[scriptName];
+				if (scriptSource == cachedSource)
+					return cachedAssemblies_[scriptName];
+			}
+
+			Assembly assembly = null;
+
+			RecompileDisabler.RecompileDisabler.ExecuteActionWithCompiler(() => {
+				assembly = CompileAssembly(scriptName, scriptSource, script);
+			});
+
+			cachedScripts_[scriptName] = scriptSource;
+			cachedAssemblies_[scriptName] = assembly;
+			return assembly;
+		}
+
+		private static Assembly CompileAssembly (string scriptName, string scriptSource, UnityEngine.Object scriptRef) {
 			var codeProvider = new CSharpCodeProvider();
 			var compilerParams = new CompilerParameters();
+
 			compilerParams.GenerateExecutable = false;
 			compilerParams.GenerateInMemory = true;
 
@@ -37,7 +73,7 @@ namespace ActionEngine {
 				}
 			}
 
-			var results = codeProvider.CompileAssemblyFromSource(compilerParams, script.text);
+			var results = codeProvider.CompileAssemblyFromSource(compilerParams, scriptSource);
 			var errors = results.Errors;
 			if (errors != null && errors.Count > 0) {
 				for (var i = 0; i < errors.Count; ++i) {
@@ -45,20 +81,12 @@ namespace ActionEngine {
 					if (error.IsWarning)
 						continue;
 
-					var msg = string.Format("{0} from {1}, Line {2}", error.ErrorText, script.name, error.Line);
-					Debug.LogError(msg, script);
+					var msg = string.Format("{0} from {1}, Line {2}", error.ErrorText, scriptName, error.Line);
+					Debug.LogError(msg, scriptRef);
 				}
 			}
 
-			try {
-				var assembly = results.CompiledAssembly;
-				var className = script.name;
-				var createMethod = assembly.GetType(className).GetMethod("Create");
-				return createMethod.Invoke(null, new object[] { context }) as ActionBase;
-			} catch (Exception) {
-				// Consume it
-			}
-			return null;
+			return results.CompiledAssembly;
 		}
 	}
 }

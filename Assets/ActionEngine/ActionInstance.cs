@@ -6,6 +6,20 @@ namespace ActionEngine {
 
 	public sealed class ActionInstance {
 
+		private class WaitForActionInstance : CustomYieldInstruction {
+			private readonly ActionInstance actionInstance_ = null;
+
+			public WaitForActionInstance (ActionInstance instance) {
+				actionInstance_ = instance;
+			}
+
+			public override bool keepWaiting {
+				get {
+					return (actionInstance_.State == InstanceState.PLAYING);
+				}
+			}
+		}
+
 		public enum InstanceState {
 			READY,
 			PLAYING,
@@ -17,21 +31,11 @@ namespace ActionEngine {
 		private InstanceState state_ = InstanceState.READY;
 
 		private bool unscaled_ = false;
-		private float queuedDelay_ = 0f;
 
 		public InstanceState State { get { return state_; } }
 
 		internal ActionInstance () {
 		}
-
-		#region Parameters
-
-		public ActionInstance AddDelay (float delay) {
-			queuedDelay_ += delay;
-			return this;
-		}
-
-		#endregion Parameters
 
 		internal void _SetAction (ActionBase action) {
 			action_ = action;
@@ -61,12 +65,6 @@ namespace ActionEngine {
 			var dt = (curTime - oldTime_);
 			oldTime_ = curTime;
 
-			queuedDelay_ -= dt;
-			if (queuedDelay_ > 0f)
-				return;
-
-			queuedDelay_ = 0f;
-
 			if (Simulate(dt))
 				Complete();
 		}
@@ -91,6 +89,10 @@ namespace ActionEngine {
 			Kill();
 		}
 
+		public CustomYieldInstruction WaitForCompletion () {
+			return new WaitForActionInstance(this);
+		}
+
 		public void Kill () {
 			if (action_ != null)
 				action_._Kill();
@@ -99,7 +101,6 @@ namespace ActionEngine {
 			state_ = InstanceState.KILLED;
 
 			unscaled_ = false;
-			queuedDelay_ = 0f;
 		}
 
 		private bool Simulate (float deltaTime) {

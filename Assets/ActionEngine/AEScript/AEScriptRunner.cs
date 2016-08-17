@@ -26,41 +26,58 @@ namespace ActionEngine {
 		public TextAsset ScriptSource { get { return scriptSource; } }
 		public AEScriptData[] DataStore { get { return dataStore; } }
 
+#if UNITY_EDITOR
+		private readonly Dictionary<string, string> initialScriptSources_ = new Dictionary<string, string>();
+#endif
+
 		private void Awake () {
+#if UNITY_EDITOR
+			if (scriptSource != null && !initialScriptSources_.ContainsKey(scriptSource.name))
+				initialScriptSources_[scriptSource.name] = scriptSource.text;
+#endif
 			EnsureAEScriptMethod();
 
 			if (playOnAwake)
-				Internal_Play(true); // No need to use CSharpCodeProvider process in the first
+				Play();
 		}
 
 		private void OnDestroy () {
 			Kill();
 		}
 
+		private ActionInstance loadedActionInstance_ = null;
 		private ActionInstance curActionInstance_ = null;
 
 		/// <summary>
-		/// Create and play new action
+		/// Play loaded action instance, or load and play it if there is no loaded action instance
 		/// </summary>
-		/// <returns>new action instance</returns>
+		/// <returns>Current action instance</returns>
 		public ActionInstance Play () {
-			return Internal_Play();
-		}
+			if (loadedActionInstance_ == null)
+				Load();
 
-		private ActionInstance Internal_Play (bool useReflectionOnly = false) {
-			curActionInstance_ = null;
+			curActionInstance_ = loadedActionInstance_;
+			loadedActionInstance_ = null;
 
-			var action = CreateAction(null, useReflectionOnly);
-			if (action != null) {
-				curActionInstance_ = action.Play(unscaled);
-			} else {
-				Debug.LogErrorFormat("Can't create an action from '{0}'" + __assignedScriptName);
-			}
-			return curActionInstance_;
+			return curActionInstance_.Play(unscaled);
 		}
 
 		/// <summary>
-		/// Complete the current playing action instance
+		/// Preload action instance for performance purpose
+		/// </summary>
+		public void Load () {
+			loadedActionInstance_ = null;
+
+			var action = CreateAction(null);
+			if (action != null) {
+				loadedActionInstance_ = action.Enqueue();
+			} else {
+				Debug.LogErrorFormat("Can't create an action from '{0}'" + __assignedScriptName);
+			}
+		}
+
+		/// <summary>
+		/// Complete the current action instance
 		/// </summary>
 		public void Complete () {
 			if (curActionInstance_ == null)
@@ -70,7 +87,7 @@ namespace ActionEngine {
 		}
 
 		/// <summary>
-		/// Kill the current playing action instance
+		/// Kill the current action instance
 		/// </summary>
 		public void Kill () {
 			if (curActionInstance_ == null)
@@ -84,13 +101,18 @@ namespace ActionEngine {
 		/// </summary>
 		/// <returns>Action</returns>
 		public ActionBase Create (Dictionary<string, object> overrideData = null) {
-			return CreateAction(overrideData, false);
+			return CreateAction(overrideData);
 		}
 
-		private ActionBase CreateAction (Dictionary<string, object> overrideData = null, bool useReflectionOnly = false) {
+		private ActionBase CreateAction (Dictionary<string, object> overrideData = null) {
+			if (scriptSource == null)
+				return null;
+
 			ActionBase action = null;
 #if UNITY_EDITOR
-			if (!useReflectionOnly) {
+			string initialScriptSource;
+			initialScriptSources_.TryGetValue(scriptSource.name, out initialScriptSource);
+			if (FileUtil.ReadRawFile(ScriptSource) != initialScriptSource) {
 				// Create Action using CSharpCodeProvider
 				action = AEScriptEditorBridge.CreateActionFromScript(this, overrideData);
 			}
@@ -98,9 +120,6 @@ namespace ActionEngine {
 			// Create Action using Reflection, Calling real script code
 			if (action == null)
 				action = CallAEScript(GetContext(overrideData));
-
-			if (action == null)
-				throw new InvalidOperationException("Can't create a action");
 
 			return action;
 		}
