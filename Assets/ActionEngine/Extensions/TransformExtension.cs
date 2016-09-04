@@ -6,45 +6,29 @@ namespace ActionEngine {
 
 	public static class TransformExtension {
 
-		#region Transform Helpers
-
-		private static void SetX (this Transform obj, float x) {
-			var pos = obj.position;
-			pos.x = x;
-			obj.position = pos;
+		private static void SetLocalX (this Transform tr, float x) {
+			tr.localPosition = tr.localPosition.SetX(x);
 		}
 
-		private static void SetY (this Transform obj, float y) {
-			var pos = obj.position;
-			pos.y = y;
-			obj.position = pos;
+		private static void SetLocalY (this Transform tr, float y) {
+			tr.localPosition = tr.localPosition.SetY(y);
 		}
 
-		private static void SetZ (this Transform obj, float z) {
-			var pos = obj.position;
-			pos.z = z;
-			obj.position = pos;
+		private static void SetLocalZ (this Transform tr, float z) {
+			tr.localPosition = tr.localPosition.SetZ(z);
 		}
 
-		private static void SetLocalX (this Transform obj, float x) {
-			var localPos = obj.localPosition;
-			localPos.x = x;
-			obj.localPosition = localPos;
+		private static void SetX (this Transform tr, float x) {
+			tr.position = tr.position.SetX(x);
 		}
 
-		private static void SetLocalY (this Transform obj, float y) {
-			var localPos = obj.localPosition;
-			localPos.y = y;
-			obj.localPosition = localPos;
+		private static void SetY (this Transform tr, float y) {
+			tr.position = tr.position.SetY(y);
 		}
 
-		private static void SetLocalZ (this Transform obj, float z) {
-			var localPos = obj.localPosition;
-			localPos.z = z;
-			obj.localPosition = localPos;
+		private static void SetZ (this Transform tr, float z) {
+			tr.position = tr.position.SetZ(z);
 		}
-
-		#endregion Helper Functions
 
 		public static Vector3TweenAction AEMove (this Transform obj, Vector3 position, float duration) {
 			return AE.Prepare<Vector3TweenAction>()

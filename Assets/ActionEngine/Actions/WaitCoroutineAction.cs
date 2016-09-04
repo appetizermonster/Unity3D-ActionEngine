@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ActionEngine {
 
-	public sealed class WaitCoroutineAction : ActionBase {
+	public sealed class WaitCoroutineAction : ActionBase<WaitCoroutineAction> {
 		private Func<object> coroutineGenerator_ = null;
 
 		#region Parameters

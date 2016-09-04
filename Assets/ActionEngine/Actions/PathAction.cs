@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ActionEngine {
 
-	public sealed class PathAction : ActionBase {
+	public sealed class PathAction : ActionBase<PathAction> {
 		private Action<Vector3> setter_ = null;
 
 		private float duration_ = 0f;

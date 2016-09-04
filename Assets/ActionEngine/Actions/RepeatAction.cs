@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ActionEngine {
 
-	public sealed class RepeatAction : ActionBase {
+	public sealed class RepeatAction : ActionBase<RepeatAction> {
 		public const int INFINITY = -1;
 
 		private int loops_ = 1;

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ActionEngine {
 
-	public sealed class ShakeTweenAction : ActionBase {
+	public sealed class ShakeTweenAction : ActionBase<ShakeTweenAction> {
 		private Func<Vector3> getter_ = null;
 		private Action<Vector3> setter_ = null;
 
@@ -55,8 +55,12 @@ namespace ActionEngine {
 			baseValue_ = getter_();
 		}
 
+		private static readonly float[] dirX_ = new float[] { 1, -1, 1, 1, 1, -1, 1, 1, -1, -1, -1 };
+		private static readonly float[] dirY_ = new float[] { -1, 1, 1, -1, 1, -1, -1, -1, 1, -1, 1 };
+		private static readonly float[] dirZ_ = new float[] { -1, 1, -1, 1, -1, 1, 1, 1, -1, -1, 1 };
+
 		protected override bool OnUpdate (float deltaTime) {
-			if (duration_ <= 0f)
+			if (duration_ <= 0f || vibrato_ <= 0f)
 				return true;
 
 			elapsed_ += deltaTime;
@@ -64,13 +68,14 @@ namespace ActionEngine {
 			var p = Mathf.Clamp01(elapsed_ / duration_);
 			var easedP = (easing_ != null) ? easing_(p) : Easings.QuadOut(p);
 
-			var totalVibrato = vibrato_ * duration_;
-			var curStrength = strength_ * (1f - easedP);
-			var height = Mathf.Sin(totalVibrato * easedP * Mathf.PI * 2f);
+			var curStrength = strength_ * (1 - easedP);
+			var height = Mathf.Sin(vibrato_ * easedP * Mathf.PI);
+			var iteration = (int)(vibrato_ * easedP);
+			var dir = new Vector3(dirX_[iteration % dirX_.Length], dirY_[iteration % dirY_.Length], dirZ_[iteration % dirZ_.Length]);
 
-			curStrength.x *= UnityEngine.Random.Range(-1f, 1f) * height;
-			curStrength.y *= UnityEngine.Random.Range(-1f, 1f) * height;
-			curStrength.z *= UnityEngine.Random.Range(-1f, 1f) * height;
+			curStrength.x *= dir.x * height;
+			curStrength.y *= dir.y * height;
+			curStrength.z *= dir.z * height;
 
 			setter_(baseValue_ + curStrength);
 			return (p >= 1f);

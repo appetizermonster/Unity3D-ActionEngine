@@ -85,7 +85,8 @@ namespace ActionEngine {
 		}
 
 		public void Complete () {
-			action_._Complete();
+			if (action_ != null)
+				action_._Complete();
 			Kill();
 		}
 

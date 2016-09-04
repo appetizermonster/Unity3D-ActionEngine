@@ -84,7 +84,7 @@ namespace ActionEngine {
 		}
 	}
 
-	public abstract class TweenActionBase<ConcreteClass, T> : ActionBase where ConcreteClass : ActionBase {
+	public abstract class TweenActionBase<ConcreteClass, T> : ActionBase<ConcreteClass> where ConcreteClass : ActionBase {
 		private Func<T> getter_ = null;
 		private Action<T> setter_ = null;
 
@@ -95,6 +95,7 @@ namespace ActionEngine {
 		private float duration_ = 0f;
 		private bool relative_ = false;
 		private EasingFunc easing_ = null;
+		private Action onUpdateValue_ = null;
 
 		private float elapsed_ = 0f;
 
@@ -130,6 +131,11 @@ namespace ActionEngine {
 			return (ConcreteClass)((object)this);
 		}
 
+		public ConcreteClass SetOnUpdateValue (Action onUpdateValue) {
+			onUpdateValue_ = onUpdateValue;
+			return (ConcreteClass)((object)this);
+		}
+
 		#endregion Parameters
 
 		protected override sealed void OnBegin () {
@@ -142,7 +148,7 @@ namespace ActionEngine {
 			}
 
 			// Apply initial state
-			setter_(startValue_);
+			UpdateValue(startValue_);
 		}
 
 		protected override bool OnUpdate (float deltaTime) {
@@ -154,13 +160,20 @@ namespace ActionEngine {
 
 			var easedP = (easing_ != null) ? easing_(p) : Easings.QuadInOut(p);
 			var curValue = Lerp(startValue_, finalValue_, easedP);
-			setter_(curValue);
+			UpdateValue(curValue);
 
 			return (p >= 1f);
 		}
 
 		protected override void OnComplete () {
-			setter_(finalValue_);
+			UpdateValue(finalValue_);
+		}
+
+		private void UpdateValue (T value) {
+			setter_(value);
+
+			if (onUpdateValue_ != null)
+				onUpdateValue_();
 		}
 
 		protected override void OnRewind () {
@@ -178,6 +191,7 @@ namespace ActionEngine {
 			duration_ = 0f;
 			relative_ = false;
 			easing_ = null;
+			onUpdateValue_ = null;
 
 			elapsed_ = 0f;
 		}

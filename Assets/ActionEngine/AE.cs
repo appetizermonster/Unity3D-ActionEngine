@@ -53,8 +53,10 @@ namespace ActionEngine {
 			return par;
 		}
 
-		public static RepeatAction Repeat (ActionBase action) {
-			return Prepare<RepeatAction>().SetAction(action);
+		public static RepeatAction Repeat (params ActionBase[] actions) {
+			if (actions.Length == 1)
+				return Prepare<RepeatAction>().SetAction(actions[0]);
+			return Prepare<RepeatAction>().SetAction(Sequence(actions));
 		}
 
 		public static ScriptAction Script (Action script) {

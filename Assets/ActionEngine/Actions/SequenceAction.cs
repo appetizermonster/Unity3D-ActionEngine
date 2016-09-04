@@ -4,13 +4,16 @@ using UnityEngine;
 
 namespace ActionEngine {
 
-	public sealed class SequenceAction : ActionBase {
+	public sealed class SequenceAction : ActionBase<SequenceAction> {
 		private readonly List<ActionBase> actions_ = new List<ActionBase>();
 		private int curIndex_ = -1;
 
 		#region Parameters
 
 		public SequenceAction AddAction (ActionBase action) {
+			if (action == null)
+				return this;
+
 			action._SetOwner(this);
 			actions_.Add(action);
 			return this;

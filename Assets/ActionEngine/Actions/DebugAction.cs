@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ActionEngine {
 
-	public sealed class DebugAction : ActionBase {
+	public sealed class DebugAction : ActionBase<DebugAction> {
 		private object message_ = null;
 		private Object context_ = null;
 

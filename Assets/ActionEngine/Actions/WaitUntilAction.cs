@@ -2,7 +2,7 @@
 
 namespace ActionEngine {
 
-	public sealed class WaitUntilAction : ActionBase {
+	public sealed class WaitUntilAction : ActionBase<WaitUntilAction> {
 		private Func<bool> predicate_ = null;
 
 		#region Parameters

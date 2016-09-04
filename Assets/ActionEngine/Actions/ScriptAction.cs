@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ActionEngine {
 
-	public sealed class ScriptAction : ActionBase {
+	public sealed class ScriptAction : ActionBase<ScriptAction> {
 		private Action script_ = null;
 
 		#region Parameters

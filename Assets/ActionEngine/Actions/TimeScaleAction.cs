@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ActionEngine {
 
-	public sealed class TimeScaleAction : ActionBase {
+	public sealed class TimeScaleAction : ActionBase<TimeScaleAction> {
 		private ActionBase action_ = null;
 		private float timeScale_ = 1f;
 

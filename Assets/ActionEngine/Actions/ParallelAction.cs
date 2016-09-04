@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ActionEngine {
 
-	public sealed class ParallelAction : ActionBase {
+	public sealed class ParallelAction : ActionBase<ParallelAction> {
 
 		public enum PlayState {
 			INCOMPLETE,
@@ -17,6 +17,9 @@ namespace ActionEngine {
 		#region Parameters
 
 		public ParallelAction AddAction (ActionBase action) {
+			if (action == null)
+				return this;
+
 			action._SetOwner(this);
 			actions_.Add(action);
 			playStates_.Add(PlayState.INCOMPLETE);

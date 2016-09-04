@@ -45,6 +45,9 @@ namespace ActionEngine {
 
 			GUILayout.BeginHorizontal();
 
+			if (GUILayout.Button(new GUIContent("Reload"))) {
+				targets.ToList().ForEach((x) => Reload(x as AEScriptRunner));
+			}
 			if (GUILayout.Button(new GUIContent("Reload and Play"))) {
 				targets.ToList().ForEach((x) => ReloadAndPlay(x as AEScriptRunner));
 			}
@@ -56,7 +59,12 @@ namespace ActionEngine {
 			GUI.enabled = true;
 		}
 
+		private void Reload (AEScriptRunner obj) {
+			obj.UseLiveScript();
+		}
+
 		private void ReloadAndPlay (AEScriptRunner obj) {
+			obj.UseLiveScript();
 			obj.Kill();
 			obj.Load();
 

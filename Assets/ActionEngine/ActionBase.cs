@@ -4,6 +4,15 @@ using UnityEngine;
 
 namespace ActionEngine {
 
+	// Class for shortcuts
+	public abstract class ActionBase<T> : ActionBase where T : ActionBase {
+
+		public T SetOnKill (Action onKill) {
+			onKill_ = onKill;
+			return (T)((object)this);
+		}
+	}
+
 	public abstract class ActionBase {
 
 		public enum InternalState {
@@ -17,6 +26,8 @@ namespace ActionEngine {
 		private ActionBase owner_ = null;
 		private IActionPool actionPool_ = null;
 		private InternalState state_ = InternalState.READY_TO_BEGIN;
+
+		protected Action onKill_ = null;
 
 		internal InternalState State { get { return state_; } }
 
@@ -59,10 +70,14 @@ namespace ActionEngine {
 		internal void _Kill () {
 			OnKill();
 
+			if (onKill_ != null)
+				onKill_();
+
 			// Reset All States
 			owner_ = null;
 			actionPool_.Pool(this);
 			state_ = InternalState.READY_TO_BEGIN;
+			onKill_ = null;
 		}
 
 		/// <summary>

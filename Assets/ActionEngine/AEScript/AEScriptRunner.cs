@@ -26,15 +26,7 @@ namespace ActionEngine {
 		public TextAsset ScriptSource { get { return scriptSource; } }
 		public AEScriptData[] DataStore { get { return dataStore; } }
 
-#if UNITY_EDITOR
-		private readonly Dictionary<string, string> initialScriptSources_ = new Dictionary<string, string>();
-#endif
-
 		private void Awake () {
-#if UNITY_EDITOR
-			if (scriptSource != null && !initialScriptSources_.ContainsKey(scriptSource.name))
-				initialScriptSources_[scriptSource.name] = scriptSource.text;
-#endif
 			EnsureAEScriptMethod();
 
 			if (playOnAwake)
@@ -49,10 +41,18 @@ namespace ActionEngine {
 		private ActionInstance curActionInstance_ = null;
 
 		/// <summary>
-		/// Play loaded action instance, or load and play it if there is no loaded action instance
+		/// Play loaded action instance with pre-settinged unscaled option
 		/// </summary>
 		/// <returns>Current action instance</returns>
 		public ActionInstance Play () {
+			return Play(unscaled);
+		}
+
+		/// <summary>
+		/// Play loaded action instance, or load and play it if there is no loaded action instance
+		/// </summary>
+		/// <returns>Current action instance</returns>
+		public ActionInstance Play (bool unscaled) {
 			if (loadedActionInstance_ == null)
 				Load();
 
@@ -110,9 +110,7 @@ namespace ActionEngine {
 
 			ActionBase action = null;
 #if UNITY_EDITOR
-			string initialScriptSource;
-			initialScriptSources_.TryGetValue(scriptSource.name, out initialScriptSource);
-			if (FileUtil.ReadRawFile(ScriptSource) != initialScriptSource) {
+			if (liveScripts_.Contains(scriptSource)) {
 				// Create Action using CSharpCodeProvider
 				action = AEScriptEditorBridge.CreateActionFromScript(this, overrideData);
 			}
@@ -123,6 +121,15 @@ namespace ActionEngine {
 
 			return action;
 		}
+
+#if UNITY_EDITOR
+		private static readonly HashSet<TextAsset> liveScripts_ = new HashSet<TextAsset>();
+
+		public void UseLiveScript () {
+			if (scriptSource != null && liveScripts_.Contains(scriptSource) == false)
+				liveScripts_.Add(scriptSource);
+		}
+#endif
 
 		private MethodInfo aeScriptMethod_ = null;
 

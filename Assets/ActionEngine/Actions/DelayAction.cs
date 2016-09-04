@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ActionEngine {
 
-	public sealed class DelayAction : ActionBase {
+	public sealed class DelayAction : ActionBase<DelayAction> {
 		private float duration_ = 0f;
 		private float elapsed_ = 0f;
 
