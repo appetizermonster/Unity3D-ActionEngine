@@ -2,6 +2,6 @@
   "name": "ActionEngine",
   "export": "Assets/ActionEngine",
   "dependencies": [
-    "appetizermonster/RecompileDisabler"
+    "appetizermonster/Unity3D-RecompileDisabler"
   ]
 }
