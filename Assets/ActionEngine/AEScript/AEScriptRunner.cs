@@ -144,7 +144,7 @@ namespace ActionEngine {
 			if (aeScriptMethod_ != null || scriptSource == null)
 				return;
 			var scriptName = __assignedScriptName;
-			var scriptType = Assembly.GetExecutingAssembly().GetType(scriptName);
+			var scriptType = UserAssemblyUtil.FindType(scriptName);
 
 			if (scriptType == null) {
 				Debug.LogError("AEScript Class name must be same with Filename");

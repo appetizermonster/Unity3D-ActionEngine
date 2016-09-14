@@ -11,3 +11,6 @@
 node_modules/
 packman-pkgs/
 .packman/
+
+# unity-packman
+packman-pkgs.meta
