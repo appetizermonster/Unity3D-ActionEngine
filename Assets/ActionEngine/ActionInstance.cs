@@ -31,17 +31,26 @@ namespace ActionEngine {
 		private InstanceState state_ = InstanceState.READY;
 
 		private bool unscaled_ = false;
+		private float oldTime_ = 0f;
 
 		public InstanceState State { get { return state_; } }
 
-		internal ActionInstance () {
+		public ActionInstance () {
+		}
+
+		internal void _Recycle () {
+			if (state_ != InstanceState.KILLED)
+				throw new InvalidOperationException("ActionInstance should be killed before recycling");
+
+			action_ = null;
+			state_ = InstanceState.READY;
+			unscaled_ = false;
+			oldTime_ = 0f;
 		}
 
 		internal void _SetAction (ActionBase action) {
 			action_ = action;
 		}
-
-		private float oldTime_ = 0f;
 
 		public ActionInstance Play (bool unscaled) {
 			if (state_ != InstanceState.READY)
@@ -100,7 +109,6 @@ namespace ActionEngine {
 
 			action_ = null;
 			state_ = InstanceState.KILLED;
-
 			unscaled_ = false;
 		}
 

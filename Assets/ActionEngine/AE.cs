@@ -5,34 +5,84 @@ using UnityEngine;
 namespace ActionEngine {
 
 	public static class AE {
-		private static ActionEngineInstance shortInstance_ = null;
+		private static ActionEngineInstance sceneInstance_ = null;
+		private static ActionEngineInstance foreverInstance_ = null;
 
-		private static ActionEngineInstance GetShortInstance () {
-			if (shortInstance_ == null) {
+		private static ActionEngineInstance GetSceneInstance () {
+			if (sceneInstance_ == null) {
 				var go = new GameObject("[ActionEngineInstance]");
-				shortInstance_ = go.AddComponent<ActionEngineInstance>();
+				sceneInstance_ = go.AddComponent<ActionEngineInstance>();
 			}
-			return shortInstance_;
+			return sceneInstance_;
+		}
+
+		private static ActionEngineInstance GetForeverInstance () {
+			if (foreverInstance_ == null) {
+				var go = new GameObject("[ActionEngineInstance.Forever]");
+				GameObject.DontDestroyOnLoad(go);
+				foreverInstance_ = go.AddComponent<ActionEngineInstance>();
+			}
+			return foreverInstance_;
+		}
+
+		public static void PreloadSceneInstance () {
+			GetSceneInstance();
+		}
+
+		public static void PreloadForeverInstance () {
+			GetForeverInstance();
+		}
+
+		public static void PreallocateAll (int allocationCount = 50) {
+			// Tween Actions
+			Preallocate<QuaternionTweenAction>(allocationCount);
+			Preallocate<Vector2TweenAction>(allocationCount);
+			Preallocate<Vector3TweenAction>(allocationCount);
+			Preallocate<Vector4TweenAction>(allocationCount);
+			Preallocate<FloatTweenAction>(allocationCount);
+			Preallocate<IntTweenAction>(allocationCount);
+			Preallocate<ColorTweenAction>(allocationCount);
+
+			// Normal Actions
+			Preallocate<DebugAction>(allocationCount);
+			Preallocate<DelayAction>(allocationCount);
+			Preallocate<ParallelAction>(allocationCount);
+			Preallocate<PathAction>(allocationCount);
+			Preallocate<RepeatAction>(allocationCount);
+			Preallocate<ScriptAction>(allocationCount);
+			Preallocate<SequenceAction>(allocationCount);
+			Preallocate<ShakeTweenAction>(allocationCount);
+			Preallocate<TimeScaleAction>(allocationCount);
+			Preallocate<WaitCoroutineAction>(allocationCount);
+			Preallocate<WaitUntilAction>(allocationCount);
+		}
+
+		public static void Preallocate<T>(int count = 50) where T : ActionBase, new() {
+			ActionPool.GetInstance().Preallocate<T>(count);
 		}
 
 		public static T Prepare<T>() where T : ActionBase, new() {
 			return ActionPool.GetInstance().GetAction<T>();
 		}
 
-		public static ActionInstance Enqueue (this ActionBase action) {
-			return GetShortInstance().Enqueue(action);
+		public static ActionInstance Enqueue (this ActionBase action, ActionInstance recycleInstance = null) {
+			return GetSceneInstance().Enqueue(action, recycleInstance);
+		}
+
+		public static ActionInstance EnqueueAsForever (this ActionBase action, ActionInstance recycleInstance = null) {
+			return GetForeverInstance().Enqueue(action, recycleInstance);
 		}
 
 		public static void KillAll () {
-			GetShortInstance().KillAll();
+			GetSceneInstance().KillAll();
 		}
 
 		/// <summary>
 		/// Play the action with short instance, it means that the action will be killed after scene
 		/// has changed
 		/// </summary>
-		public static ActionInstance Play (this ActionBase action, bool unscaled = false) {
-			return action.Enqueue().Play(unscaled);
+		public static ActionInstance Play (this ActionBase action, bool unscaled = false, ActionInstance recycleInstance = null) {
+			return action.Enqueue(recycleInstance).Play(unscaled);
 		}
 
 		#region Action Shortcuts
@@ -77,6 +127,12 @@ namespace ActionEngine {
 
 		public static FloatTweenAction Tween (Func<float> getter, Action<float> setter, float endValue, float duration) {
 			return Prepare<FloatTweenAction>()
+				.SetGetter(getter).SetSetter(setter)
+				.SetEndValue(endValue).SetDuration(duration);
+		}
+
+		public static Vector3TweenAction Tween (Func<Vector3> getter, Action<Vector3> setter, Vector3 endValue, float duration) {
+			return Prepare<Vector3TweenAction>()
 				.SetGetter(getter).SetSetter(setter)
 				.SetEndValue(endValue).SetDuration(duration);
 		}

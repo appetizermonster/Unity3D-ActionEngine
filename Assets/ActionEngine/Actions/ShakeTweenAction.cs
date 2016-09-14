@@ -8,12 +8,16 @@ namespace ActionEngine {
 		private Func<Vector3> getter_ = null;
 		private Action<Vector3> setter_ = null;
 
+		private Func<object, Vector3> getterWithPayload_ = null;
+		private Action<object, Vector3> setterWithPayload_ = null;
+
 		private Vector3 baseValue_ = Vector3.zero;
 
 		private Vector3 strength_ = Vector3.one;
 		private float vibrato_ = 10f;
 		private float duration_ = 0f;
 		private EasingFunc easing_ = null;
+		private object payload_ = null;
 
 		private float elapsed_ = 0f;
 
@@ -26,6 +30,16 @@ namespace ActionEngine {
 
 		public ShakeTweenAction SetSetter (Action<Vector3> setter) {
 			setter_ = setter;
+			return this;
+		}
+
+		public ShakeTweenAction SetGetterWithPayload (Func<object, Vector3> getter) {
+			getterWithPayload_ = getter;
+			return this;
+		}
+
+		public ShakeTweenAction SetSetterWithPayload (Action<object, Vector3> setter) {
+			setterWithPayload_ = setter;
 			return this;
 		}
 
@@ -49,10 +63,18 @@ namespace ActionEngine {
 			return this;
 		}
 
+		public ShakeTweenAction SetPayload (object payload) {
+			payload_ = payload;
+			return this;
+		}
+
 		#endregion Parameters
 
 		protected override sealed void OnBegin () {
-			baseValue_ = getter_();
+			if (getter_ != null)
+				baseValue_ = getter_();
+			else if (getterWithPayload_ != null)
+				baseValue_ = getterWithPayload_(payload_);
 		}
 
 		private static readonly float[] dirX_ = new float[] { 1, -1, 1, 1, 1, -1, 1, 1, -1, -1, -1 };
@@ -77,12 +99,19 @@ namespace ActionEngine {
 			curStrength.y *= dir.y * height;
 			curStrength.z *= dir.z * height;
 
-			setter_(baseValue_ + curStrength);
+			UpdateValue(baseValue_ + curStrength);
 			return (p >= 1f);
 		}
 
 		protected override void OnComplete () {
-			setter_(baseValue_);
+			UpdateValue(baseValue_);
+		}
+
+		private void UpdateValue (Vector3 value) {
+			if (setter_ != null)
+				setter_(value);
+			else if (setterWithPayload_ != null)
+				setterWithPayload_(payload_, value);
 		}
 
 		protected override void OnRewind () {
@@ -93,12 +122,16 @@ namespace ActionEngine {
 			getter_ = null;
 			setter_ = null;
 
+			getterWithPayload_ = null;
+			setterWithPayload_ = null;
+
 			baseValue_ = Vector3.zero;
 
 			strength_ = Vector3.one;
 			vibrato_ = 10f;
 			duration_ = 0f;
 			easing_ = null;
+			payload_ = null;
 
 			elapsed_ = 0f;
 		}

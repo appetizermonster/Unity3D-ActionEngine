@@ -8,11 +8,11 @@ namespace ActionEngine {
 
 		public static FloatTweenAction AEFov (this Camera cam, float fov, float duration) {
 			return AE.Prepare<FloatTweenAction>()
-				.SetGetter(() => cam.fieldOfView)
-				.SetSetter((x) => cam.fieldOfView = x)
+				.SetGetterWithPayload((t) => ((Camera)t).fieldOfView)
+				.SetSetterWithPayload((t, k) => ((Camera)t).fieldOfView = k)
+				.SetPayload(cam)
 				.SetEndValue(fov)
 				.SetDuration(duration);
 		}
-
 	}
 }

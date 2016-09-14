@@ -8,16 +8,18 @@ namespace ActionEngine {
 
 		public static FloatTweenAction AESizeDeltaX (this RectTransform obj, float size, float duration) {
 			return AE.Prepare<FloatTweenAction>()
-				.SetGetter(() => obj.sizeDelta.x)
-				.SetSetter((x) => obj.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, x))
+				.SetGetterWithPayload((t) => ((RectTransform)t).sizeDelta.x)
+				.SetSetterWithPayload((t, k) => ((RectTransform)t).SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, k))
+				.SetPayload(obj)
 				.SetEndValue(size)
 				.SetDuration(duration);
 		}
 
 		public static FloatTweenAction AESizeDeltaY (this RectTransform obj, float size, float duration) {
 			return AE.Prepare<FloatTweenAction>()
-				.SetGetter(() => obj.sizeDelta.y)
-				.SetSetter((x) => obj.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, x))
+				.SetGetterWithPayload((t) => ((RectTransform)t).sizeDelta.y)
+				.SetSetterWithPayload((t, k) => ((RectTransform)t).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, k))
+				.SetPayload(obj)
 				.SetEndValue(size)
 				.SetDuration(duration);
 		}

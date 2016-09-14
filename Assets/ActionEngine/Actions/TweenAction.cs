@@ -88,6 +88,9 @@ namespace ActionEngine {
 		private Func<T> getter_ = null;
 		private Action<T> setter_ = null;
 
+		private Func<object, T> getterWithPayload_ = null;
+		private Action<object, T> setterWithPayload_ = null;
+
 		private T startValue_ = default(T);
 		private T endValue_ = default(T);
 		private T finalValue_ = default(T);
@@ -96,6 +99,7 @@ namespace ActionEngine {
 		private bool relative_ = false;
 		private EasingFunc easing_ = null;
 		private Action onUpdateValue_ = null;
+		private object payload_ = null;
 
 		private float elapsed_ = 0f;
 
@@ -108,6 +112,16 @@ namespace ActionEngine {
 
 		public ConcreteClass SetSetter (Action<T> setter) {
 			setter_ = setter;
+			return (ConcreteClass)((object)this);
+		}
+
+		public ConcreteClass SetGetterWithPayload (Func<object, T> getter) {
+			getterWithPayload_ = getter;
+			return (ConcreteClass)((object)this);
+		}
+
+		public ConcreteClass SetSetterWithPayload (Action<object, T> setter) {
+			setterWithPayload_ = setter;
 			return (ConcreteClass)((object)this);
 		}
 
@@ -136,10 +150,18 @@ namespace ActionEngine {
 			return (ConcreteClass)((object)this);
 		}
 
+		public ConcreteClass SetPayload (object payload) {
+			payload_ = payload;
+			return (ConcreteClass)((object)this);
+		}
+
 		#endregion Parameters
 
 		protected override sealed void OnBegin () {
-			startValue_ = getter_();
+			if (getter_ != null)
+				startValue_ = getter_();
+			else if (getterWithPayload_ != null)
+				startValue_ = getterWithPayload_(payload_);
 
 			if (relative_) {
 				finalValue_ = Add(startValue_, endValue_);
@@ -170,7 +192,11 @@ namespace ActionEngine {
 		}
 
 		private void UpdateValue (T value) {
-			setter_(value);
+			if (setter_ != null)
+				setter_(value);
+
+			if (setterWithPayload_ != null)
+				setterWithPayload_(payload_, value);
 
 			if (onUpdateValue_ != null)
 				onUpdateValue_();
@@ -184,6 +210,9 @@ namespace ActionEngine {
 			getter_ = null;
 			setter_ = null;
 
+			getterWithPayload_ = null;
+			setterWithPayload_ = null;
+
 			startValue_ = default(T);
 			endValue_ = default(T);
 			finalValue_ = default(T);
@@ -192,6 +221,7 @@ namespace ActionEngine {
 			relative_ = false;
 			easing_ = null;
 			onUpdateValue_ = null;
+			payload_ = null;
 
 			elapsed_ = 0f;
 		}

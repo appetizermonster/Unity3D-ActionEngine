@@ -11,9 +11,15 @@ namespace ActionEngine {
 			KillAll();
 		}
 
-		public ActionInstance Enqueue (ActionBase action) {
-			var actionInstance = new ActionInstance();
+		public ActionInstance Enqueue (ActionBase action, ActionInstance recycleInstance = null) {
+			var actionInstance = recycleInstance;
+			if (actionInstance == null)
+				actionInstance = new ActionInstance();
+			else
+				actionInstance._Recycle();
+
 			actionInstance._SetAction(action);
+
 			playingInstances_.Add(actionInstance);
 			return actionInstance;
 		}
@@ -26,8 +32,8 @@ namespace ActionEngine {
 			playingInstances_.Clear();
 		}
 
-		private readonly List<ActionInstance> playingInstances_ = new List<ActionInstance>();
-		private readonly List<ActionInstance> removalList_ = new List<ActionInstance>();
+		private readonly List<ActionInstance> playingInstances_ = new List<ActionInstance>(100);
+		private readonly List<ActionInstance> removalList_ = new List<ActionInstance>(100);
 
 		private void Update () {
 			removalList_.Clear();

@@ -21,6 +21,18 @@ namespace ActionEngine {
 
 		private static readonly Dictionary<Type, Queue<ActionBase>> actionQueues_ = new Dictionary<Type, Queue<ActionBase>>();
 
+		public void Preallocate<T>(int count = 1) where T : ActionBase, new() {
+			var type = typeof(T);
+			var pool = GetActionQueue(type);
+
+			for (var i = 0; i < count; ++i) {
+				var action = new T();
+				action._SetActionPool(this);
+
+				pool.Enqueue(action);
+			}
+		}
+
 		public T GetAction<T>() where T : ActionBase, new() {
 			var type = typeof(T);
 			var pool = GetActionQueue(type);
