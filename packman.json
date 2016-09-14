@@ -1,0 +1,7 @@
+{
+  "name": "ActionEngine",
+  "export": "Assets/ActionEngine",
+  "dependencies": [
+    "appetizermonster/RecompileDisabler"
+  ]
+}
