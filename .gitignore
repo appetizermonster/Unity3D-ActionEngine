@@ -6,3 +6,8 @@
 *.csproj
 *.suo
 *.sln
+
+# unity-packman
+node_modules/
+packman-pkgs/
+.packman/
