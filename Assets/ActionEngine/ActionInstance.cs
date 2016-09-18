@@ -48,7 +48,7 @@ namespace ActionEngine {
 		}
 
 		internal void _Recycle () {
-			if (state_ != InstanceState.KILLED)
+			if (state_ != InstanceState.KILLED && state_ != InstanceState.READY)
 				throw new InvalidOperationException("ActionInstance should be killed before recycling");
 
 			action_ = null;
