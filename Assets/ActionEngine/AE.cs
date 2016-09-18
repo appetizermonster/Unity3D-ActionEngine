@@ -84,12 +84,16 @@ namespace ActionEngine {
 			GetSceneInstance().KillAll();
 		}
 
-		/// <summary>
-		/// Play the action with short instance, it means that the action will be killed after scene
-		/// has changed
-		/// </summary>
-		public static ActionInstance Play (this ActionBase action, bool unscaled = false, ActionInstance recycleInstance = null) {
-			return action.Enqueue(recycleInstance).Play(unscaled);
+		public static ActionInstance Play (this ActionBase action, UpdateType updateType = UpdateType.Normal, ActionInstance recycleInstance = null) {
+			return action.Enqueue(recycleInstance).Play(updateType);
+		}
+
+		public static ActionInstance PlayUnscaled (this ActionBase action, ActionInstance recycleInstance = null) {
+			return action.Enqueue(recycleInstance).Play(UpdateType.Unscaled);
+		}
+
+		public static ActionInstance PlayFixed (this ActionBase action, ActionInstance recycleInstance = null) {
+			return action.Enqueue(recycleInstance).Play(UpdateType.Fixed);
 		}
 
 		#region Action Shortcuts

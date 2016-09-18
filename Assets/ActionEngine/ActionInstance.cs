@@ -4,6 +4,14 @@ using UnityEngine;
 
 namespace ActionEngine {
 
+	[Flags]
+	public enum UpdateType {
+		None = 0,
+		Normal = 1,
+		Unscaled = 2,
+		Fixed = 4
+	}
+
 	public sealed class ActionInstance {
 
 		private class WaitForActionInstance : CustomYieldInstruction {
@@ -30,7 +38,8 @@ namespace ActionEngine {
 		private ActionBase action_;
 		private InstanceState state_ = InstanceState.READY;
 
-		private bool unscaled_ = false;
+		private UpdateType updateType_ = UpdateType.Normal;
+		public UpdateType UpdateType { get { return updateType_; } }
 		private float oldTime_ = 0f;
 
 		public InstanceState State { get { return state_; } }
@@ -44,7 +53,7 @@ namespace ActionEngine {
 
 			action_ = null;
 			state_ = InstanceState.READY;
-			unscaled_ = false;
+			updateType_ = UpdateType.Normal;
 			oldTime_ = 0f;
 		}
 
@@ -53,10 +62,14 @@ namespace ActionEngine {
 		}
 
 		public ActionInstance Play (bool unscaled) {
+			return Play(unscaled ? UpdateType.Unscaled : UpdateType.Normal);
+		}
+
+		public ActionInstance Play (UpdateType updateType) {
 			if (state_ != InstanceState.READY)
 				throw new Exception("State must be READY");
 
-			unscaled_ = unscaled;
+			updateType_ = updateType;
 
 			state_ = InstanceState.PLAYING;
 			oldTime_ = GetLocalTime();
@@ -66,7 +79,7 @@ namespace ActionEngine {
 			return this;
 		}
 
-		internal void _InternalUpdate () {
+		internal void Internal_Update () {
 			if (state_ != InstanceState.PLAYING)
 				return;
 
@@ -109,7 +122,7 @@ namespace ActionEngine {
 
 			action_ = null;
 			state_ = InstanceState.KILLED;
-			unscaled_ = false;
+			updateType_ = UpdateType.Normal;
 		}
 
 		private bool Simulate (float deltaTime) {
@@ -117,8 +130,10 @@ namespace ActionEngine {
 		}
 
 		private float GetLocalTime () {
-			if (unscaled_)
+			if (updateType_ == UpdateType.Unscaled)
 				return Time.unscaledTime;
+			else if (updateType_ == UpdateType.Fixed)
+				return Time.fixedTime;
 			return Time.time;
 		}
 	}

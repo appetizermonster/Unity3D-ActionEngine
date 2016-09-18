@@ -23,6 +23,7 @@ namespace ActionEngine {
 		[SerializeField]
 		private AEScriptData[] dataStore;
 
+		public bool Unscaled { get { return unscaled; } }
 		public TextAsset ScriptSource { get { return scriptSource; } }
 		public AEScriptData[] DataStore { get { return dataStore; } }
 
@@ -129,6 +130,7 @@ namespace ActionEngine {
 			if (scriptSource != null && liveScripts_.Contains(scriptSource) == false)
 				liveScripts_.Add(scriptSource);
 		}
+
 #endif
 
 		private MethodInfo aeScriptMethod_ = null;

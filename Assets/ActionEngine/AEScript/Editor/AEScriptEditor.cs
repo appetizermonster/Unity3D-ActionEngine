@@ -72,7 +72,7 @@ namespace ActionEngine {
 			AE.Sequence(
 				AE.Delay(0.5f),
 				AE.Script(() => obj.Play())
-			).Play(true);
+			).Play(obj.Unscaled ? UpdateType.Unscaled : UpdateType.Normal);
 		}
 
 		private void Kill (AEScriptRunner obj) {

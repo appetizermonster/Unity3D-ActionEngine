@@ -36,11 +36,22 @@ namespace ActionEngine {
 		private readonly List<ActionInstance> removalList_ = new List<ActionInstance>(100);
 
 		private void Update () {
+			UpdateInstances(UpdateType.Normal | UpdateType.Unscaled);
+		}
+
+		private void FixedUpdate () {
+			UpdateInstances(UpdateType.Fixed);
+		}
+
+		private void UpdateInstances (UpdateType targetUpdateTypes) {
 			removalList_.Clear();
 
 			for (var i = 0; i < playingInstances_.Count; ++i) {
 				var actionInstance = playingInstances_[i];
-				actionInstance._InternalUpdate();
+				if ((actionInstance.UpdateType & targetUpdateTypes) == 0)
+					continue;
+
+				actionInstance.Internal_Update();
 
 				if (actionInstance.State == ActionInstance.InstanceState.KILLED)
 					removalList_.Add(actionInstance);
