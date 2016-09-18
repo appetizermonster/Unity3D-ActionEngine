@@ -6,6 +6,9 @@ namespace ActionEngine {
 
 	public static class TransformExtension {
 
+		public static void DummyForAlloc () {
+		}
+
 		#region Helpers
 
 		private static void SetLocalX (this Transform tr, float x) {
@@ -46,82 +49,109 @@ namespace ActionEngine {
 
 		#endregion Helpers
 
+		private static readonly Func<object, Vector3> AEMove_Getter = (t) => ((Transform)t).position;
+		private static readonly Action<object, Vector3> AEMove_Setter = (t, k) => ((Transform)t).position = k;
+
 		public static Vector3TweenAction AEMove (this Transform obj, Vector3 position, float duration) {
 			return AE.Prepare<Vector3TweenAction>()
-				.SetGetterWithPayload((t) => ((Transform)t).position)
-				.SetSetterWithPayload((t, k) => ((Transform)t).position = k)
+				.SetGetterWithPayload(AEMove_Getter)
+				.SetSetterWithPayload(AEMove_Setter)
 				.SetPayload(obj)
 				.SetEndValue(position)
 				.SetDuration(duration);
 		}
+
+		private static readonly Func<object, float> AEMoveX_Getter = (t) => ((Transform)t).position.x;
+		private static readonly Action<object, float> AEMoveX_Setter = (t, k) => ((Transform)t).SetX(k);
 
 		public static FloatTweenAction AEMoveX (this Transform obj, float x, float duration) {
 			return AE.Prepare<FloatTweenAction>()
-				.SetGetterWithPayload((t) => ((Transform)t).position.x)
-				.SetSetterWithPayload((t, k) => ((Transform)t).SetX(k))
+				.SetGetterWithPayload(AEMoveX_Getter)
+				.SetSetterWithPayload(AEMoveX_Setter)
 				.SetPayload(obj)
 				.SetEndValue(x)
 				.SetDuration(duration);
 		}
 
+		private static readonly Func<object, float> AEMoveY_Getter = (t) => ((Transform)t).position.y;
+		private static readonly Action<object, float> AEMoveY_Setter = (t, k) => ((Transform)t).SetY(k);
+
 		public static FloatTweenAction AEMoveY (this Transform obj, float y, float duration) {
 			return AE.Prepare<FloatTweenAction>()
-				.SetGetterWithPayload((t) => ((Transform)t).position.y)
-				.SetSetterWithPayload((t, k) => ((Transform)t).SetY(k))
+				.SetGetterWithPayload(AEMoveY_Getter)
+				.SetSetterWithPayload(AEMoveY_Setter)
 				.SetPayload(obj)
 				.SetEndValue(y)
 				.SetDuration(duration);
 		}
 
+		private static readonly Func<object, float> AEMoveZ_Getter = (t) => ((Transform)t).position.z;
+		private static readonly Action<object, float> AEMoveZ_Setter = (t, k) => ((Transform)t).SetZ(k);
+
 		public static FloatTweenAction AEMoveZ (this Transform obj, float z, float duration) {
 			return AE.Prepare<FloatTweenAction>()
-				.SetGetterWithPayload((t) => ((Transform)t).position.z)
-				.SetSetterWithPayload((t, k) => ((Transform)t).SetZ(k))
+				.SetGetterWithPayload(AEMoveZ_Getter)
+				.SetSetterWithPayload(AEMoveZ_Setter)
 				.SetPayload(obj)
 				.SetEndValue(z)
 				.SetDuration(duration);
 		}
 
+		private static readonly Func<object, Vector3> AELocalMove_Getter = (t) => ((Transform)t).localPosition;
+		private static readonly Action<object, Vector3> AELocalMove_Setter = (t, k) => ((Transform)t).localPosition = k;
+
 		public static Vector3TweenAction AELocalMove (this Transform obj, Vector3 position, float duration) {
 			return AE.Prepare<Vector3TweenAction>()
-				.SetGetterWithPayload((t) => ((Transform)t).localPosition)
-				.SetSetterWithPayload((t, k) => ((Transform)t).localPosition = k)
+				.SetGetterWithPayload(AELocalMove_Getter)
+				.SetSetterWithPayload(AELocalMove_Setter)
 				.SetPayload(obj)
 				.SetEndValue(position)
 				.SetDuration(duration);
 		}
 
+		private static readonly Func<object, float> AELocalMoveX_Getter = (t) => ((Transform)t).localPosition.x;
+		private static readonly Action<object, float> AELocalMoveX_Setter = (t, k) => ((Transform)t).SetLocalX(k);
+
 		public static FloatTweenAction AELocalMoveX (this Transform obj, float x, float duration) {
 			return AE.Prepare<FloatTweenAction>()
-				.SetGetterWithPayload((t) => ((Transform)t).localPosition.x)
-				.SetSetterWithPayload((t, k) => ((Transform)t).SetLocalX(k))
+				.SetGetterWithPayload(AELocalMoveX_Getter)
+				.SetSetterWithPayload(AELocalMoveX_Setter)
 				.SetPayload(obj)
 				.SetEndValue(x)
 				.SetDuration(duration);
 		}
 
+		private static readonly Func<object, float> AELocalMoveY_Getter = (t) => ((Transform)t).localPosition.y;
+		private static readonly Action<object, float> AELocalMoveY_Setter = (t, k) => ((Transform)t).SetLocalY(k);
+
 		public static FloatTweenAction AELocalMoveY (this Transform obj, float y, float duration) {
 			return AE.Prepare<FloatTweenAction>()
-				.SetGetterWithPayload((t) => ((Transform)t).localPosition.y)
-				.SetSetterWithPayload((t, k) => ((Transform)t).SetLocalY(k))
+				.SetGetterWithPayload(AELocalMoveY_Getter)
+				.SetSetterWithPayload(AELocalMoveY_Setter)
 				.SetPayload(obj)
 				.SetEndValue(y)
 				.SetDuration(duration);
 		}
 
+		private static readonly Func<object, float> AELocalMoveZ_Getter = (t) => ((Transform)t).localPosition.z;
+		private static readonly Action<object, float> AELocalMoveZ_Setter = (t, k) => ((Transform)t).SetLocalZ(k);
+
 		public static FloatTweenAction AELocalMoveZ (this Transform obj, float z, float duration) {
 			return AE.Prepare<FloatTweenAction>()
-				.SetGetterWithPayload((t) => ((Transform)t).localPosition.z)
-				.SetSetterWithPayload((t, k) => ((Transform)t).SetLocalZ(k))
+				.SetGetterWithPayload(AELocalMoveZ_Getter)
+				.SetSetterWithPayload(AELocalMoveZ_Setter)
 				.SetPayload(obj)
 				.SetEndValue(z)
 				.SetDuration(duration);
 		}
 
+		private static readonly Func<object, Vector3> AEScale_Getter = (t) => ((Transform)t).localScale;
+		private static readonly Action<object, Vector3> AEScale_Setter = (t, k) => ((Transform)t).localScale = k;
+
 		public static Vector3TweenAction AEScale (this Transform obj, Vector3 scale, float duration) {
 			return AE.Prepare<Vector3TweenAction>()
-				.SetGetterWithPayload((t) => ((Transform)t).localScale)
-				.SetSetterWithPayload((t, k) => ((Transform)t).localScale = k)
+				.SetGetterWithPayload(AEScale_Getter)
+				.SetSetterWithPayload(AEScale_Setter)
 				.SetPayload(obj)
 				.SetEndValue(scale)
 				.SetDuration(duration);
@@ -129,53 +159,68 @@ namespace ActionEngine {
 
 		public static Vector3TweenAction AEScale (this Transform obj, float scale, float duration) {
 			return AE.Prepare<Vector3TweenAction>()
-				.SetGetterWithPayload((t) => ((Transform)t).localScale)
-				.SetSetterWithPayload((t, k) => ((Transform)t).localScale = k)
+				.SetGetterWithPayload(AEScale_Getter)
+				.SetSetterWithPayload(AEScale_Setter)
 				.SetPayload(obj)
 				.SetEndValue(Vector3.one * scale)
 				.SetDuration(duration);
 		}
 
+		private static readonly Func<object, float> AEScaleX_Getter = (t) => ((Transform)t).localScale.x;
+		private static readonly Action<object, float> AEScaleX_Setter = (t, k) => ((Transform)t).SetScaleX(k);
+
 		public static FloatTweenAction AEScaleX (this Transform obj, float x, float duration) {
 			return AE.Prepare<FloatTweenAction>()
-				.SetGetterWithPayload((t) => ((Transform)t).localScale.x)
-				.SetSetterWithPayload((t, k) => ((Transform)t).SetScaleX(k))
+				.SetGetterWithPayload(AEScaleX_Getter)
+				.SetSetterWithPayload(AEScaleX_Setter)
 				.SetPayload(obj)
 				.SetEndValue(x)
 				.SetDuration(duration);
 		}
 
+		private static readonly Func<object, float> AEScaleY_Getter = (t) => ((Transform)t).localScale.y;
+		private static readonly Action<object, float> AEScaleY_Setter = (t, k) => ((Transform)t).SetScaleY(k);
+
 		public static FloatTweenAction AEScaleY (this Transform obj, float y, float duration) {
 			return AE.Prepare<FloatTweenAction>()
-				.SetGetterWithPayload((t) => ((Transform)t).localScale.y)
-				.SetSetterWithPayload((t, k) => ((Transform)t).SetScaleY(k))
+				.SetGetterWithPayload(AEScaleY_Getter)
+				.SetSetterWithPayload(AEScaleY_Setter)
 				.SetPayload(obj)
 				.SetEndValue(y)
 				.SetDuration(duration);
 		}
 
+		private static readonly Func<object, float> AEScaleZ_Getter = (t) => ((Transform)t).localScale.z;
+		private static readonly Action<object, float> AEScaleZ_Setter = (t, k) => ((Transform)t).SetScaleZ(k);
+
 		public static FloatTweenAction AEScaleZ (this Transform obj, float z, float duration) {
 			return AE.Prepare<FloatTweenAction>()
-				.SetGetterWithPayload((t) => ((Transform)t).localScale.z)
-				.SetSetterWithPayload((t, k) => ((Transform)t).SetScaleZ(k))
+				.SetGetterWithPayload(AEScaleZ_Getter)
+				.SetSetterWithPayload(AEScaleZ_Setter)
 				.SetPayload(obj)
 				.SetEndValue(z)
 				.SetDuration(duration);
 		}
 
+		private static readonly Func<object, Vector3> AERotate_Getter = (t) => ((Transform)t).eulerAngles;
+		private static readonly Action<object, Vector3> AERotate_Setter = (t, k) => ((Transform)t).eulerAngles = k;
+
 		public static Vector3TweenAction AERotate (this Transform obj, Vector3 angle, float duration) {
 			return AE.Prepare<Vector3TweenAction>()
-				.SetGetterWithPayload((t) => ((Transform)t).eulerAngles)
-				.SetSetterWithPayload((t, k) => ((Transform)t).eulerAngles = k)
+				.SetGetterWithPayload(AERotate_Getter)
+				.SetSetterWithPayload(AERotate_Setter)
 				.SetPayload(obj)
 				.SetEndValue(angle)
 				.SetDuration(duration);
 		}
 
+		private static readonly Func<object, Vector3> AELocalRotate_Getter = (t) => ((Transform)t).localEulerAngles;
+		private static readonly Action<object, Vector3> AELocalRotate_Setter = (t, k) => ((Transform)t).localEulerAngles = k;
+
 		public static Vector3TweenAction AELocalRotate (this Transform obj, Vector3 angle, float duration) {
 			return AE.Prepare<Vector3TweenAction>()
-				.SetGetterWithPayload((t) => ((Transform)t).localEulerAngles)
-				.SetSetterWithPayload((t, k) => ((Transform)t).localEulerAngles = k)
+				.SetGetterWithPayload(AELocalRotate_Getter)
+				.SetSetterWithPayload(AELocalRotate_Setter)
 				.SetPayload(obj)
 				.SetEndValue(angle)
 				.SetDuration(duration);
@@ -201,10 +246,13 @@ namespace ActionEngine {
 			return action;
 		}
 
+		private static readonly Func<object, Vector3> AEShakePosition_Getter = (t) => ((Transform)t).position;
+		private static readonly Action<object, Vector3> AEShakePosition_Setter = (t, k) => ((Transform)t).position = k;
+
 		public static ShakeTweenAction AEShakePosition (this Transform obj, Vector3 strength, float vibrato, float duration) {
 			return AE.Prepare<ShakeTweenAction>()
-				.SetGetterWithPayload((t) => ((Transform)t).position)
-				.SetSetterWithPayload((t, k) => ((Transform)t).position = k)
+				.SetGetterWithPayload(AEShakePosition_Getter)
+				.SetSetterWithPayload(AEShakePosition_Setter)
 				.SetPayload(obj)
 				.SetStrength(strength)
 				.SetVibrato(vibrato)

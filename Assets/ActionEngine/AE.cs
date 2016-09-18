@@ -34,6 +34,13 @@ namespace ActionEngine {
 		}
 
 		public static void PreallocateAll (int allocationCount = 50) {
+			// Extensions
+			CameraExtension.DummyForAlloc();
+			GraphicExtension.DummyForAlloc();
+			LightExtension.DummyForAlloc();
+			RectTransformExtension.DummyForAlloc();
+			TransformExtension.DummyForAlloc();
+
 			// Tween Actions
 			Preallocate<QuaternionTweenAction>(allocationCount);
 			Preallocate<Vector2TweenAction>(allocationCount);
