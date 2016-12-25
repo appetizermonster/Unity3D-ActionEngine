@@ -7,23 +7,23 @@ namespace ActionEngine {
 
 	public interface IAEScriptContext {
 
-		float GetFloat (string key);
+		float GetFloat (string key, float defValue = 0f);
 
-		int GetInt (string key);
+		int GetInt (string key, int defValue = 0);
 
-		bool GetBool (string key);
+		bool GetBool (string key, bool defValue = false);
 
-		string GetString (string key);
+		string GetString (string key, string defValue = null);
 
-		Vector2 GetVector2 (string key);
+		Vector2 GetVector2 (string key, Vector2 defValue = default(Vector2));
 
-		Vector3 GetVector3 (string key);
+		Vector3 GetVector3 (string key, Vector3 defValue = default(Vector3));
 
-		Transform GetTransform (string key);
+		Transform GetTransform (string key, Transform defValue = null);
 
-		GameObject GetGameObject (string key);
+		GameObject GetGameObject (string key, GameObject defValue = null);
 
-		AEScriptRunner GetAEScript (string key);
+		AEScriptRunner GetAEScript (string key, AEScriptRunner defValue = null);
 	}
 
 	public sealed class AEScriptContext : IAEScriptContext {
@@ -35,45 +35,43 @@ namespace ActionEngine {
 			overrideData_ = overrideData;
 		}
 
-		public float GetFloat (string key) {
-			return FindData(key, (x) => x.@float);
+		public float GetFloat (string key, float defValue = 0f) {
+			return FindData(key, (x) => x.@float, defValue);
 		}
 
-		public int GetInt (string key) {
-			return FindData(key, (x) => x.@int);
+		public int GetInt (string key, int defValue = 0) {
+			return FindData(key, (x) => x.@int, defValue);
 		}
 
-		public bool GetBool (string key) {
-			return FindData(key, (x) => x.@bool);
+		public bool GetBool (string key, bool defValue = false) {
+			return FindData(key, (x) => x.@bool, defValue);
 		}
 
-		public string GetString (string key) {
-			return FindData(key, (x) => x.@string);
+		public string GetString (string key, string defValue = null) {
+			return FindData(key, (x) => x.@string, defValue);
 		}
 
-		public Vector2 GetVector2 (string key) {
-			return FindData(key, (x) => x.@vector2);
+		public Vector2 GetVector2 (string key, Vector2 defValue = default(Vector2)) {
+			return FindData(key, (x) => x.@vector2, defValue);
 		}
 
-		public Vector3 GetVector3 (string key) {
-			return FindData(key, (x) => x.vector3);
+		public Vector3 GetVector3 (string key, Vector3 defValue = default(Vector3)) {
+			return FindData(key, (x) => x.vector3, defValue);
 		}
 
-		public Transform GetTransform (string key) {
-			return FindData(key, (x) => x.@transform);
+		public Transform GetTransform (string key, Transform defValue = null) {
+			return FindData(key, (x) => x.@transform, defValue);
 		}
 
-		public GameObject GetGameObject (string key) {
-			return FindData(key, (x) => x.@gameobject);
+		public GameObject GetGameObject (string key, GameObject defValue = null) {
+			return FindData(key, (x) => x.@gameobject, defValue);
 		}
 
-		public AEScriptRunner GetAEScript (string key) {
-			return FindData(key, (x) => x.@aescript);
+		public AEScriptRunner GetAEScript (string key, AEScriptRunner defValue = null) {
+			return FindData(key, (x) => x.@aescript, defValue);
 		}
 
-		private static AEScriptData defaultData_ = new AEScriptData();
-
-		private T FindData<T>(string key, Func<AEScriptData, T> accessor) {
+		private T FindData<T> (string key, Func<AEScriptData, T> accessor, T defValue) {
 			if (overrideData_ != null) {
 				object overrideValue;
 				if (overrideData_.TryGetValue(key, out overrideValue))
@@ -86,7 +84,8 @@ namespace ActionEngine {
 				if (data.key == key)
 					return accessor(data);
 			}
-			return accessor(defaultData_);
+
+			return defValue;
 		}
 	}
 }

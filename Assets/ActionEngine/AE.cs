@@ -39,7 +39,9 @@ namespace ActionEngine {
 			GraphicExtension.DummyForAlloc();
 			LightExtension.DummyForAlloc();
 			RectTransformExtension.DummyForAlloc();
+			TextExtension.DummyForAlloc();
 			TransformExtension.DummyForAlloc();
+			ScrollRectExtension.DummyForAlloc();
 
 			// Tween Actions
 			Preallocate<QuaternionTweenAction>(allocationCount);
@@ -64,11 +66,11 @@ namespace ActionEngine {
 			Preallocate<WaitUntilAction>(allocationCount);
 		}
 
-		public static void Preallocate<T>(int count = 50) where T : ActionBase, new() {
+		public static void Preallocate<T> (int count = 50) where T : ActionBase, new() {
 			ActionPool.GetInstance().Preallocate<T>(count);
 		}
 
-		public static T Prepare<T>() where T : ActionBase, new() {
+		public static T Prepare<T> () where T : ActionBase, new() {
 			return ActionPool.GetInstance().GetAction<T>();
 		}
 
@@ -88,8 +90,16 @@ namespace ActionEngine {
 		/// Play the action with short instance, it means that the action will be killed after scene
 		/// has changed
 		/// </summary>
-		public static ActionInstance Play (this ActionBase action, bool unscaled = false, ActionInstance recycleInstance = null) {
-			return action.Enqueue(recycleInstance).Play(unscaled);
+		public static ActionInstance Play (this ActionBase action, ActionInstance recycleInstance = null) {
+			return action.Enqueue(recycleInstance).Play(UpdateType.NORMAL);
+		}
+
+		public static ActionInstance PlayUnscaled (this ActionBase action, ActionInstance recycleInstance = null) {
+			return action.Enqueue(recycleInstance).Play(UpdateType.UNSCALED);
+		}
+
+		public static ActionInstance PlayFixed (this ActionBase action, ActionInstance recycleInstance = null) {
+			return action.Enqueue(recycleInstance).Play(UpdateType.FIXED);
 		}
 
 		#region Action Shortcuts
@@ -142,6 +152,18 @@ namespace ActionEngine {
 			return Prepare<Vector3TweenAction>()
 				.SetGetter(getter).SetSetter(setter)
 				.SetEndValue(endValue).SetDuration(duration);
+		}
+
+		public static ColorTweenAction Tween (Func<Color> getter, Action<Color> setter, Color endValue, float duration) {
+			return Prepare<ColorTweenAction>()
+				.SetGetter(getter).SetSetter(setter)
+				.SetEndValue(endValue).SetDuration(duration);
+		}
+
+		public static ShakeTweenAction ShakeTween (Func<Vector3> getter, Action<Vector3> setter, Vector3 strength, float vibrato, float duration) {
+			return Prepare<ShakeTweenAction>()
+				.SetGetter(getter).SetSetter(setter)
+				.SetStrength(strength).SetVibrato(vibrato).SetDuration(duration);
 		}
 
 		public static WaitCoroutineAction WaitCoroutine (Func<object> coroutineGenerator) {

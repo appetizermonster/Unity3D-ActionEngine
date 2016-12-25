@@ -5,6 +5,7 @@ using UnityEngine;
 namespace ActionEngine {
 
 	public static class Easings {
+
 		public static void DummyFuncForAllocation () {
 		}
 
@@ -89,6 +90,10 @@ namespace ActionEngine {
 		public static readonly EasingFunc BackInOut = (p) => Easing.BackEaseInOut(p, 0f, 1f, 1f);
 
 		public static readonly EasingFunc BackOutIn = (p) => Easing.BackEaseOutIn(p, 0f, 1f, 1f);
+
+		public static void SetOvershoot (float overshoot) {
+			Easing.overshoot = overshoot;
+		}
 
 		public static EasingFunc Factory_SoftBounce (float bounces = 4, float stiffness = 3) {
 			float alpha = stiffness / 100f;

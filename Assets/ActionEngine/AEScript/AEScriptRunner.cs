@@ -23,6 +23,7 @@ namespace ActionEngine {
 		[SerializeField]
 		private AEScriptData[] dataStore;
 
+		public bool Unscaled { get { return unscaled; } }
 		public TextAsset ScriptSource { get { return scriptSource; } }
 		public AEScriptData[] DataStore { get { return dataStore; } }
 
@@ -40,26 +41,41 @@ namespace ActionEngine {
 		private ActionInstance loadedActionInstance_ = null;
 		private ActionInstance curActionInstance_ = null;
 
+		public bool IsPlaying () {
+			if (curActionInstance_ == null)
+				return false;
+			return (curActionInstance_.State == ActionInstance.InstanceState.PLAYING);
+		}
+
+		public AEScriptData FindData (string key) {
+			for (var i = 0; i < dataStore.Length; ++i) {
+				var data = dataStore[i];
+				if (data.key == key)
+					return data;
+			}
+			return null;
+		}
+
 		/// <summary>
 		/// Play loaded action instance with pre-settinged unscaled option
 		/// </summary>
 		/// <returns>Current action instance</returns>
 		public ActionInstance Play () {
-			return Play(unscaled);
+			return Play(unscaled ? UpdateType.UNSCALED : UpdateType.NORMAL);
 		}
 
 		/// <summary>
 		/// Play loaded action instance, or load and play it if there is no loaded action instance
 		/// </summary>
 		/// <returns>Current action instance</returns>
-		public ActionInstance Play (bool unscaled) {
+		public ActionInstance Play (UpdateType updateType) {
 			if (loadedActionInstance_ == null)
 				Load();
 
 			curActionInstance_ = loadedActionInstance_;
 			loadedActionInstance_ = null;
 
-			return curActionInstance_.Play(unscaled);
+			return curActionInstance_.Play(updateType);
 		}
 
 		/// <summary>
@@ -129,30 +145,33 @@ namespace ActionEngine {
 			if (scriptSource != null && liveScripts_.Contains(scriptSource) == false)
 				liveScripts_.Add(scriptSource);
 		}
+
 #endif
 
-		private MethodInfo aeScriptMethod_ = null;
+		private delegate ActionBase AEScriptFunc (IAEScriptContext ctx);
+
+		private AEScriptFunc aeScriptFunc_ = null;
 
 		private ActionBase CallAEScript (IAEScriptContext context) {
 			EnsureAEScriptMethod();
-			if (aeScriptMethod_ != null)
-				return aeScriptMethod_.Invoke(null, new object[] { context }) as ActionBase;
+			if (aeScriptFunc_ != null)
+				return aeScriptFunc_(context);
 			return null;
 		}
 
 		private void EnsureAEScriptMethod () {
-			if (aeScriptMethod_ != null || scriptSource == null)
+			if (aeScriptFunc_ != null || scriptSource == null)
 				return;
 			var scriptName = __assignedScriptName;
 			var scriptType = UserAssemblyUtil.FindType(scriptName);
 
 			if (scriptType == null) {
 				Debug.LogError("AEScript Class name must be same with Filename");
-				aeScriptMethod_ = null;
+				aeScriptFunc_ = null;
 				return;
 			}
 
-			aeScriptMethod_ = scriptType.GetMethod("Create");
+			aeScriptFunc_ = (AEScriptFunc)Delegate.CreateDelegate(typeof(AEScriptFunc), scriptType.GetMethod("Create"));
 		}
 
 		private IAEScriptContext defaultContext_ = null;

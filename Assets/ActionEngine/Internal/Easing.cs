@@ -14,7 +14,9 @@ namespace ActionEngine.Internal {
 	/// Animates the change in value of a double property using 
 	/// Robert Penner's easing equations for interpolation over a specified duration.
 	/// </summary>
-	public class Easing {
+	public sealed class Easing {
+
+		public static float overshoot = 1.70158f;
 
 		/// <summary>
 		/// Linear change in value.
@@ -587,7 +589,7 @@ namespace ActionEngine.Internal {
 		/// <param name="d">Duration of animation.</param>
 		/// <returns>The correct value.</returns>
 		public static float BackEaseOut (float t, float b, float c, float d) {
-			return c * ((t = t / d - 1) * t * ((1.70158f + 1) * t + 1.70158f) + 1) + b;
+			return c * ((t = t / d - 1) * t * ((overshoot + 1) * t + overshoot) + 1) + b;
 		}
 
 		/// <summary>
@@ -600,7 +602,7 @@ namespace ActionEngine.Internal {
 		/// <param name="d">Duration of animation.</param>
 		/// <returns>The correct value.</returns>
 		public static float BackEaseIn (float t, float b, float c, float d) {
-			return c * (t /= d) * t * ((1.70158f + 1) * t - 1.70158f) + b;
+			return c * (t /= d) * t * ((overshoot + 1) * t - overshoot) + b;
 		}
 
 		/// <summary>
@@ -613,7 +615,7 @@ namespace ActionEngine.Internal {
 		/// <param name="d">Duration of animation.</param>
 		/// <returns>The correct value.</returns>
 		public static float BackEaseInOut (float t, float b, float c, float d) {
-			float s = 1.70158f;
+			float s = overshoot;
 			if ((t /= d / 2) < 1)
 				return c / 2 * (t * t * (((s *= (1.525f)) + 1) * t - s)) + b;
 			return c / 2 * ((t -= 2) * t * (((s *= (1.525f)) + 1) * t + s) + 2) + b;

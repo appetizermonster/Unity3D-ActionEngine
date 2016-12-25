@@ -69,10 +69,15 @@ namespace ActionEngine {
 			obj.Load();
 
 			// Add delay to compensate script loading time
-			AE.Sequence(
+			var action = AE.Sequence(
 				AE.Delay(0.5f),
 				AE.Script(() => obj.Play())
-			).Play(true);
+			);
+
+			if (obj.Unscaled)
+				action.PlayUnscaled();
+			else
+				action.Play();
 		}
 
 		private void Kill (AEScriptRunner obj) {

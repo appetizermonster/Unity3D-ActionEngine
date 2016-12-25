@@ -32,5 +32,17 @@ namespace ActionEngine {
 				.SetEndValue(size)
 				.SetDuration(duration);
 		}
+
+		private static Func<object, Vector2> AEAnchorPos_Getter = (t) => ((RectTransform)t).anchoredPosition;
+		private static Action<object, Vector2> AEAnchorPos_Setter = (t, k) => ((RectTransform)t).anchoredPosition = k;
+
+		public static Vector2TweenAction AEAnchorPos (this RectTransform obj, Vector2 anchorPos, float duration) {
+			return AE.Prepare<Vector2TweenAction>()
+				.SetGetterWithPayload(AEAnchorPos_Getter)
+				.SetSetterWithPayload(AEAnchorPos_Setter)
+				.SetPayload(obj)
+				.SetEndValue(anchorPos)
+				.SetDuration(duration);
+		}
 	}
 }

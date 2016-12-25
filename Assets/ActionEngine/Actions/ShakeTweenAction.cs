@@ -12,6 +12,7 @@ namespace ActionEngine {
 		private Action<object, Vector3> setterWithPayload_ = null;
 
 		private Vector3 baseValue_ = Vector3.zero;
+		private Vector3? forcedBaseValue_ = null;
 
 		private Vector3 strength_ = Vector3.one;
 		private float vibrato_ = 10f;
@@ -43,6 +44,11 @@ namespace ActionEngine {
 			return this;
 		}
 
+		public ShakeTweenAction SetBaseValue (Vector3? baseValue) {
+			forcedBaseValue_ = baseValue;
+			return this;
+		}
+
 		public ShakeTweenAction SetStrength (Vector3 strength) {
 			strength_ = strength;
 			return this;
@@ -71,6 +77,11 @@ namespace ActionEngine {
 		#endregion Parameters
 
 		protected override sealed void OnBegin () {
+			if (forcedBaseValue_.HasValue) {
+				baseValue_ = forcedBaseValue_.Value;
+				return;
+			}
+
 			if (getter_ != null)
 				baseValue_ = getter_();
 			else if (getterWithPayload_ != null)
@@ -126,6 +137,7 @@ namespace ActionEngine {
 			setterWithPayload_ = null;
 
 			baseValue_ = Vector3.zero;
+			forcedBaseValue_ = null;
 
 			strength_ = Vector3.one;
 			vibrato_ = 10f;

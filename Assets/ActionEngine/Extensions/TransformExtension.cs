@@ -258,5 +258,18 @@ namespace ActionEngine {
 				.SetVibrato(vibrato)
 				.SetDuration(duration);
 		}
+
+		private static readonly Func<object, Vector3> AEShakeLocalPosition_Getter = (t) => ((Transform)t).localPosition;
+		private static readonly Action<object, Vector3> AEShakeLocalPosition_Setter = (t, k) => ((Transform)t).localPosition = k;
+
+		public static ShakeTweenAction AEShakeLocalPosition (this Transform obj, Vector3 strength, float vibrato, float duration) {
+			return AE.Prepare<ShakeTweenAction>()
+				.SetGetterWithPayload(AEShakeLocalPosition_Getter)
+				.SetSetterWithPayload(AEShakeLocalPosition_Setter)
+				.SetPayload(obj)
+				.SetStrength(strength)
+				.SetVibrato(vibrato)
+				.SetDuration(duration);
+		}
 	}
 }

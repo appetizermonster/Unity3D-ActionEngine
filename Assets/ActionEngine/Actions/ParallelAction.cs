@@ -11,8 +11,8 @@ namespace ActionEngine {
 			COMPLETE
 		}
 
-		private readonly List<ActionBase> actions_ = new List<ActionBase>();
-		private readonly List<PlayState> playStates_ = new List<PlayState>();
+		private readonly List<ActionBase> actions_ = new List<ActionBase>(10);
+		private readonly List<PlayState> playStates_ = new List<PlayState>(10);
 
 		#region Parameters
 

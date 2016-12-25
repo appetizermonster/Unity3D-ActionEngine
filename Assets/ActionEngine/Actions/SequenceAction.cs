@@ -5,7 +5,7 @@ using UnityEngine;
 namespace ActionEngine {
 
 	public sealed class SequenceAction : ActionBase<SequenceAction> {
-		private readonly List<ActionBase> actions_ = new List<ActionBase>();
+		private readonly List<ActionBase> actions_ = new List<ActionBase>(10);
 		private int curIndex_ = -1;
 
 		#region Parameters
